@@ -2,16 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class StepGauge extends StatefulWidget {
-  const StepGauge({super.key});
+  final int steps;
+
+  const StepGauge({super.key, required this.steps});
+
   @override
   State<StatefulWidget> createState() {
-    return _StepGauge();
+    return _StepGaugeState();
   }
 }
 
-class _StepGauge extends State<StepGauge> {
+class _StepGaugeState extends State<StepGauge> {
+  late int _currentSteps;
+
   @override
-  Widget build(context) {
+  void initState() {
+    super.initState();
+    _currentSteps = widget.steps;
+  }
+
+  @override
+  void didUpdateWidget(covariant StepGauge oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.steps != _currentSteps) {
+      setState(() {
+        _currentSteps = widget.steps;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
       heightFactor: 0.75,
@@ -27,12 +48,12 @@ class _StepGauge extends State<StepGauge> {
                 ),
                 labelFormat: '',
                 minorTickStyle: const MinorTickStyle(length: 0),
-                pointers: const <GaugePointer>[
+                pointers: <GaugePointer>[
                   RangePointer(
-                    value: 50,
+                    value: ((_currentSteps.toDouble()-10000) / 2499) * 100,
                     width: 0.1,
                     sizeUnit: GaugeSizeUnit.factor,
-                    gradient: SweepGradient(
+                    gradient: const SweepGradient(
                       colors: <Color>[
                         Color.fromARGB(255, 230, 145, 172),
                         Color.fromARGB(255, 200, 133, 223)
@@ -44,15 +65,15 @@ class _StepGauge extends State<StepGauge> {
               ),
             ],
           ),
-          const Positioned.fill(
+          Positioned.fill(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '9999',
-                  style: TextStyle(color: Colors.white),
+                  '$_currentSteps',
+                  style: const TextStyle(color: Colors.white),
                 ),
-                Text(
+                const Text(
                   'Steps',
                   style: TextStyle(color: Colors.white),
                 ),
