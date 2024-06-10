@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:watch/screens/ai.dart';
 import 'package:watch/screens/landing.dart';
+import 'package:watch/screens/record.dart';
+import 'package:watch/screens/store.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -26,13 +28,16 @@ class _TabsScreenState extends State<TabsScreen> {
     Widget activePage = const LandingPage();
 
     if (_selectedPageIndex == 1) {
+      activePage = const RecordScreen();
+    } else if (_selectedPageIndex == 2) {
       activePage = const AiScreen();
+    } else if (_selectedPageIndex == 3) {
+      activePage = const StoreScreen();
     }
 
     return Scaffold(
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
-        
         items: const [
           BottomNavigationBarItem(
               icon: Icon(FontAwesome5Solid.home), label: 'Home'),
@@ -48,8 +53,10 @@ class _TabsScreenState extends State<TabsScreen> {
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        selectedItemColor: Colors.orangeAccent, // Optional: Change the color of the selected item
-        unselectedItemColor: Colors.white, // Optional: Change the color of unselected items
+        selectedItemColor: Colors
+            .orangeAccent, // Optional: Change the color of the selected item
+        unselectedItemColor:
+            Colors.white, // Optional: Change the color of unselected items
       ),
     );
   }

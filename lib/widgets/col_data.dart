@@ -47,7 +47,7 @@ class _ColData extends State<ColData> {
     return Column(
       children: [
         const Padding(
-          padding: EdgeInsets.only(top: 35.0),
+          padding: EdgeInsets.only(top: 45.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
