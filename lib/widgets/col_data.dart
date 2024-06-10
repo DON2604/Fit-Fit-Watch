@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart' as http;
+import 'package:watch/screens/achivements.dart';
 import 'dart:convert';
 import 'dart:async';
 
 import 'package:watch/widgets/step_gauge.dart';
+import 'package:watch/widgets/temperature.dart';
 
 class ColData extends StatefulWidget {
   const ColData({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  State<ColData> createState() {
     return _ColData();
   }
 }
@@ -28,7 +31,8 @@ class _ColData extends State<ColData> {
 
   Future<void> _fetchSteps() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.29.190:5000/steps'));
+      final response =
+          await http.get(Uri.parse('http://192.168.29.190:5000/steps'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -46,15 +50,19 @@ class _ColData extends State<ColData> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 45.0),
+        Padding(
+          padding: const EdgeInsets.only(top: 45.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(left: 14.0),
+                child: Temperature(),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(right: 14.0),
                 child: Text(
-                  "39°C",
+                  "Fit-Fit",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,
@@ -62,21 +70,20 @@ class _ColData extends State<ColData> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 14.0),
-                child: Text(
-                  "Exercise",
-                  style: TextStyle(
+                padding: const EdgeInsets.only(right: 14.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AchievementsScreen()),
+                    );
+                  },
+                  child: const Icon(
+                    FontAwesome5Solid.medal,
                     color: Colors.white,
-                    fontSize: 20.0,
+                    size: 25,
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 14.0),
-                child: Icon(
-                  Icons.watch,
-                  color: Colors.white,
-                  size: 25,
                 ),
               ),
             ],

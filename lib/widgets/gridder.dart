@@ -6,7 +6,7 @@ import 'dart:async';
 class Gridder extends StatefulWidget {
   const Gridder({super.key});
   @override
-  State<StatefulWidget> createState() {
+  State<Gridder> createState() {
     return _Gridder();
   }
 }

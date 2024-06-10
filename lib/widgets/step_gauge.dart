@@ -7,7 +7,7 @@ class StepGauge extends StatefulWidget {
   const StepGauge({super.key, required this.steps});
 
   @override
-  State<StatefulWidget> createState() {
+  State<StepGauge> createState() {
     return _StepGaugeState();
   }
 }
