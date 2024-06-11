@@ -70,7 +70,7 @@ class _ColData extends State<ColData> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 14.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
