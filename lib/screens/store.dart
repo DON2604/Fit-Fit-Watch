@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class StoreItem {
   final String imageUrl;
@@ -22,28 +23,39 @@ class StoreScreen extends StatelessWidget {
     StoreItem(
       imageUrl: 'assets/items/item0.jpg',
       name: 'Headphones',
-      currentPrice: '\$108.97',
-      originalPrice: '\$135',
+      currentPrice: '10000',
+      originalPrice: '13500',
     ),
     StoreItem(
       imageUrl: 'assets/items/item1.jpg',
       name: 'Sports Shoes',
-      currentPrice: '\$112.50',
-      originalPrice: '\$140',
+      currentPrice: '12050',
+      originalPrice: '14000',
     ),
     StoreItem(
       imageUrl: 'assets/items/item2.jpg',
       name: 'Hydration Bottle',
-      currentPrice: '\$15.99',
-      originalPrice: '\$20',
+      currentPrice: '7000',
+      originalPrice: '8000',
+    ),
+    StoreItem(
+      imageUrl: 'assets/items/item4.jpg',
+      name: 'Gym Bag',
+      currentPrice: '45000',
+      originalPrice: '50000',
     ),
     StoreItem(
       imageUrl: 'assets/items/item3.jpg',
       name: 'Skipping Rope',
-      currentPrice: '\$12.99',
-      originalPrice: '\$18',
+      currentPrice: '12999',
+      originalPrice: '18000',
     ),
-    // Add more items as needed
+    StoreItem(
+      imageUrl: 'assets/items/item5.jpg',
+      name: 'Gym Mat',
+      currentPrice: '9000',
+      originalPrice: '12000',
+    ),
   ];
 
   @override
@@ -66,7 +78,7 @@ class StoreScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 22,
+            height: 20,
           ),
           CarouselSlider(
             options: CarouselOptions(
@@ -79,6 +91,9 @@ class StoreScreen extends StatelessWidget {
               autoPlayAnimationDuration: const Duration(milliseconds: 800),
               autoPlayCurve: Curves.fastOutSlowIn,
               scrollDirection: Axis.horizontal,
+              enlargeCenterPage: true,
+              enlargeFactor: 0.2,
+              viewportFraction: 0.8,
             ),
             items: [1, 2, 3].map((i) {
               return Builder(
@@ -96,8 +111,7 @@ class StoreScreen extends StatelessWidget {
                         image: AssetImage('assets/carousel/car$i.png'),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
-                          Colors.black.withOpacity(
-                              0.28), // Adjust the opacity here to change the darkness
+                          Colors.black.withOpacity(0.28),
                           BlendMode.darken,
                         ),
                       ),
@@ -115,7 +129,7 @@ class StoreScreen extends StatelessWidget {
             }).toList(),
           ),
           const SizedBox(
-            height: 28,
+            height: 30,
           ),
           const Padding(
             padding: EdgeInsets.only(right: 220.0),
@@ -125,6 +139,9 @@ class StoreScreen extends StatelessWidget {
                 fontSize: 18.0,
               ),
             ),
+          ),
+          const SizedBox(
+            height: 18,
           ),
           Expanded(
             child: GridView.builder(
@@ -158,13 +175,24 @@ class StoreScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5.0),
-                      Text(
-                        item.currentPrice,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            FontAwesome5Solid.coins,
+                            color: Color.fromARGB(255, 231, 175, 7),
+                            size: 16,
+                          ),
+                          const SizedBox(width: 5.0),
+                          Text(
+                            item.currentPrice,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 5.0),
                       Text(

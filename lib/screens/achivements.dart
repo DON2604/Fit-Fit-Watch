@@ -5,11 +5,11 @@ import 'package:watch/widgets/progess_container.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({
-    super.key,
+    Key? key,
     required this.completedSteps,
     required this.completedDistance,
     required this.completedCalories,
-  });
+  }) : super(key: key);
 
   final int targetSteps = 9000;
   final int targetDistance = 10;
@@ -17,6 +17,7 @@ class AchievementsScreen extends StatelessWidget {
   final int completedSteps;
   final int completedDistance;
   final int completedCalories;
+  final int points = 6000;
 
   String getProgressString(int target, int completed) {
     if (completed >= target) {
@@ -30,7 +31,7 @@ class AchievementsScreen extends StatelessWidget {
     if (completed >= target) {
       return 1;
     } else {
-      return completed/target;
+      return completed / target;
     }
   }
 
@@ -88,24 +89,24 @@ class AchievementsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 8.0,
                     horizontal: 15.0,
                   ),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         FontAwesome5Solid.coins,
                         color: Color.fromARGB(255, 231, 175, 7),
                         size: 32,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
-                        "6000 Coins",
-                        style: TextStyle(
+                        "$points Coins",
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 231, 175, 7),
@@ -124,7 +125,7 @@ class AchievementsScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (ctx) =>  StoreScreen(),
+                        builder: (ctx) => StoreScreen(),
                       ),
                     );
                   },
@@ -145,7 +146,7 @@ class AchievementsScreen extends StatelessWidget {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Store'),
+                      Text('Redeem'),
                       SizedBox(width: 8),
                       Icon(Icons.storefront),
                     ],
