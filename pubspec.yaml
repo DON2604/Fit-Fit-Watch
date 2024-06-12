@@ -41,6 +41,7 @@ dependencies:
   geolocator: ^12.0.0
   permission_handler: ^11.3.1
   simple_progress_indicators: ^0.2.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,9 @@ flutter:
     - assets/badges/bad3.png
     - assets/badges/bad4.png
     - assets/badges/bad5.png
+    - assets/carousel/car1.png
+    - assets/carousel/car2.png
+    - assets/carousel/car3.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
