@@ -75,6 +75,11 @@ flutter:
     - assets/carousel/car1.png
     - assets/carousel/car2.png
     - assets/carousel/car3.png
+    - assets/items/item0.jpg
+    - assets/items/item1.jpg
+    - assets/items/item2.jpg
+    - assets/items/item3.jpg
+
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

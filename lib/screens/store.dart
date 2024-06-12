@@ -1,8 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+class StoreItem {
+  final String imageUrl;
+  final String name;
+  final String currentPrice;
+  final String originalPrice;
+
+  StoreItem({
+    required this.imageUrl,
+    required this.name,
+    required this.currentPrice,
+    required this.originalPrice,
+  });
+}
+
 class StoreScreen extends StatelessWidget {
-  const StoreScreen({super.key});
+  StoreScreen({super.key});
+
+  final List<StoreItem> storeItems = [
+    StoreItem(
+      imageUrl: 'assets/items/item0.jpg',
+      name: 'Headphones',
+      currentPrice: '\$108.97',
+      originalPrice: '\$135',
+    ),
+    StoreItem(
+      imageUrl: 'assets/items/item1.jpg',
+      name: 'Sports Shoes',
+      currentPrice: '\$112.50',
+      originalPrice: '\$140',
+    ),
+    StoreItem(
+      imageUrl: 'assets/items/item2.jpg',
+      name: 'Hydration Bottle',
+      currentPrice: '\$15.99',
+      originalPrice: '\$20',
+    ),
+    StoreItem(
+      imageUrl: 'assets/items/item3.jpg',
+      name: 'Skipping Rope',
+      currentPrice: '\$12.99',
+      originalPrice: '\$18',
+    ),
+    // Add more items as needed
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +66,7 @@ class StoreScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 30,
+            height: 22,
           ),
           CarouselSlider(
             options: CarouselOptions(
@@ -73,7 +115,7 @@ class StoreScreen extends StatelessWidget {
             }).toList(),
           ),
           const SizedBox(
-            height: 40,
+            height: 28,
           ),
           const Padding(
             padding: EdgeInsets.only(right: 220.0),
@@ -93,8 +135,9 @@ class StoreScreen extends StatelessWidget {
                 mainAxisSpacing: 10.0,
                 childAspectRatio: 0.75,
               ),
-              itemCount: 4, // Set the number of items here
+              itemCount: storeItems.length,
               itemBuilder: (context, index) {
+                final item = storeItems[index];
                 return Card(
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
@@ -104,20 +147,20 @@ class StoreScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/shoe$index.png', // Update with actual image paths
-                        height: 80.0,
+                        item.imageUrl,
+                        height: 140.0,
                       ),
                       const SizedBox(height: 10.0),
-                      const Text(
-                        'Air Jordan 1 Mid', // Update with actual product names
-                        style: TextStyle(
+                      Text(
+                        item.name,
+                        style: const TextStyle(
                           fontSize: 16.0,
                         ),
                       ),
                       const SizedBox(height: 5.0),
-                      const Text(
-                        '\$108.97', // Update with actual prices
-                        style: TextStyle(
+                      Text(
+                        item.currentPrice,
+                        style: const TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
@@ -125,7 +168,7 @@ class StoreScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 5.0),
                       Text(
-                        '\$135', // Update with actual old prices
+                        item.originalPrice,
                         style: TextStyle(
                           fontSize: 14.0,
                           decoration: TextDecoration.lineThrough,

@@ -32,7 +32,7 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 2) {
       activePage = const AiScreen();
     } else if (_selectedPageIndex == 3) {
-      activePage = const StoreScreen();
+      activePage = StoreScreen();
     }
 
     return Scaffold(
