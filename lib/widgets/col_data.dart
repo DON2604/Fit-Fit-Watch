@@ -76,7 +76,11 @@ class _ColData extends State<ColData> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AchievementsScreen()),
+                          builder: (context) => const AchievementsScreen(
+                            completedSteps: 6000,
+                            completedDistance: 7, 
+                            completedCalories: 1100,
+                          )),
                     );
                   },
                   child: const Icon(
