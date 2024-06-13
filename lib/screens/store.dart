@@ -1,62 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-
-class StoreItem {
-  final String imageUrl;
-  final String name;
-  final String currentPrice;
-  final String originalPrice;
-
-  StoreItem({
-    required this.imageUrl,
-    required this.name,
-    required this.currentPrice,
-    required this.originalPrice,
-  });
-}
+import 'package:watch/data/dummy_product.dart';
+import 'package:watch/screens/product_detail.dart';
 
 class StoreScreen extends StatelessWidget {
-  StoreScreen({super.key});
-
-  final List<StoreItem> storeItems = [
-    StoreItem(
-      imageUrl: 'assets/items/item0.jpg',
-      name: 'Headphones',
-      currentPrice: '10000',
-      originalPrice: '13500',
-    ),
-    StoreItem(
-      imageUrl: 'assets/items/item1.jpg',
-      name: 'Sports Shoes',
-      currentPrice: '12050',
-      originalPrice: '14000',
-    ),
-    StoreItem(
-      imageUrl: 'assets/items/item2.jpg',
-      name: 'Hydration Bottle',
-      currentPrice: '7000',
-      originalPrice: '8000',
-    ),
-    StoreItem(
-      imageUrl: 'assets/items/item4.jpg',
-      name: 'Gym Bag',
-      currentPrice: '45000',
-      originalPrice: '50000',
-    ),
-    StoreItem(
-      imageUrl: 'assets/items/item3.jpg',
-      name: 'Skipping Rope',
-      currentPrice: '12999',
-      originalPrice: '18000',
-    ),
-    StoreItem(
-      imageUrl: 'assets/items/item5.jpg',
-      name: 'Gym Mat',
-      currentPrice: '9000',
-      originalPrice: '12000',
-    ),
-  ];
+  const StoreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -163,58 +112,69 @@ class StoreScreen extends StatelessWidget {
                   mainAxisSpacing: 10.0,
                   childAspectRatio: 0.75,
                 ),
-                itemCount: storeItems.length,
+                itemCount: productItems.length,
                 itemBuilder: (context, index) {
-                  final item = storeItems[index];
-                  return Card(
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          item.imageUrl,
-                          height: 140.0,
+                  final item = productItems[index];
+                   return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailScreen(item: item),
                         ),
-                        SizedBox(height: 10.0),
-                        Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontSize: 16.0,
+                      );
+                    },
+                    child: Card(
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 10.0),
+                          Image.asset(
+                            item.imageUrl,
+                            height: 140.0,
                           ),
-                        ),
-                        SizedBox(height: 5.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              FontAwesome5Solid.coins,
-                              color: Color.fromARGB(255, 231, 175, 7),
-                              size: 16,
+                          const SizedBox(height: 5.0),
+                          Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 16.0,
                             ),
-                            SizedBox(width: 5.0),
-                            Text(
-                              item.currentPrice,
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
+                          ),
+                          const SizedBox(height: 5.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                FontAwesome5Solid.coins,
+                                color: Color.fromARGB(255, 231, 175, 7),
+                                size: 16,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          item.originalPrice,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey[600],
+                              const SizedBox(width: 5.0),
+                              Text(
+                                item.currentPrice,
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 5.0),
+                          Text(
+                            item.originalPrice,
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
