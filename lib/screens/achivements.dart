@@ -130,7 +130,7 @@ class AchievementsScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (ctx) => StoreScreen(),
+                          builder: (ctx) => const StoreScreen(),
                         ),
                       );
                     },

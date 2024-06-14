@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:watch/screens/ai.dart';
 import 'package:watch/screens/landing.dart';
+import 'package:watch/screens/notification.dart';
 import 'package:watch/screens/record.dart';
 import 'package:watch/screens/store.dart';
 
@@ -32,7 +33,9 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 2) {
       activePage = const AiScreen();
     } else if (_selectedPageIndex == 3) {
-      activePage = StoreScreen();
+      activePage = const StoreScreen();
+    } else if (_selectedPageIndex == 4) {
+      activePage = const NotificationScreen();
     }
 
     return Scaffold(
@@ -46,6 +49,8 @@ class _TabsScreenState extends State<TabsScreen> {
           BottomNavigationBarItem(
               icon: Icon(MaterialCommunityIcons.face_man_shimmer), label: 'AI'),
           BottomNavigationBarItem(icon: Icon(Icons.storefront), label: 'Store'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications), label: 'Notification'),
         ],
         onTap: _selectedPage,
         currentIndex: _selectedPageIndex,
