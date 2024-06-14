@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:watch/model/store_items.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key, required this.item});
+class ProductDetail extends StatelessWidget {
+  const ProductDetail({super.key, required this.item});
 
   final StoreItem item;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16,),
+        Container(
+          height: 380,
+          alignment: Alignment.center,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset(
               item.imageUrl,
-              height: 200.0,
             ),
-            const SizedBox(height: 20.0),
+          ),
+        ),
+        const SizedBox(height: 20.0),
+        Column(
+          children: [
             Text(
               item.name,
               style: const TextStyle(
@@ -50,13 +53,14 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(height: 20.0),
             Text(
               item.description,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16.0,
               ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }

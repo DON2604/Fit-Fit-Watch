@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:watch/data/dummy_product.dart';
-import 'package:watch/screens/product_detail.dart';
+import 'package:watch/widgets/product_detail.dart';
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
@@ -80,7 +80,8 @@ class StoreScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           phrase[i - 1],
-                          style: const TextStyle(fontSize: 25.0, color: Colors.white),
+                          style: const TextStyle(
+                              fontSize: 25.0, color: Colors.white),
                         ),
                       ),
                     );
@@ -115,13 +116,16 @@ class StoreScreen extends StatelessWidget {
                 itemCount: productItems.length,
                 itemBuilder: (context, index) {
                   final item = productItems[index];
-                   return GestureDetector(
+                  return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetailScreen(item: item),
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (ctx) => FractionallySizedBox(
+                          heightFactor: 0.85,
+                          child: ProductDetail(item: item),
                         ),
+                        isScrollControlled:
+                            true, // This allows the modal to take the specified height factor
                       );
                     },
                     child: Card(
@@ -133,9 +137,12 @@ class StoreScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 10.0),
-                          Image.asset(
-                            item.imageUrl,
-                            height: 140.0,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              item.imageUrl,
+                              height: 146.0,
+                            ),
                           ),
                           const SizedBox(height: 5.0),
                           Text(
@@ -144,7 +151,6 @@ class StoreScreen extends StatelessWidget {
                               fontSize: 16.0,
                             ),
                           ),
-                          const SizedBox(height: 5.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -164,7 +170,6 @@ class StoreScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 5.0),
                           Text(
                             item.originalPrice,
                             style: TextStyle(
