@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:watch/model/store_items.dart';
 
 class ProductDetail extends StatelessWidget {
@@ -11,7 +12,9 @@ class ProductDetail extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16,),
+        const SizedBox(
+          height: 16,
+        ),
         Container(
           height: 380,
           alignment: Alignment.center,
@@ -33,13 +36,31 @@ class ProductDetail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10.0),
-            Text(
-              'Current Price: ${item.currentPrice}',
-              style: const TextStyle(
-                fontSize: 20.0,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Current Price: ',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Icon(
+                  FontAwesome5Solid.coins,
+                  color: Color.fromARGB(255, 231, 175, 7),
+                  size: 16,
+                ),
+                Text(
+                  item.currentPrice,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 5.0),
             Text(
