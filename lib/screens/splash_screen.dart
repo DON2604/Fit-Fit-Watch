@@ -1,26 +1,24 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch/screens/login.dart';
 import 'package:watch/screens/tabs.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreenState extends State<SplashScreen> {
+  static const String KEYLOGIN = "login";
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const TabsScreen(),
-          ));
-    });
+
+    whereToGo();
   }
 
   @override
@@ -30,8 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-             Colors.purple,
-             Colors.white // Pink color
+              Colors.purple,
+              Colors.white // Pink color
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -45,5 +43,26 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  void whereToGo() async {
+    var sharePref = await SharedPreferences.getInstance();
+    var isLoggedIn = sharePref.getBool(KEYLOGIN);
+
+    Timer(const Duration(seconds: 2), () {
+      if (isLoggedIn != null) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TabsScreen(),
+            ));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ));
+      }
+    });
   }
 }
