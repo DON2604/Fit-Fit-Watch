@@ -1,28 +1,53 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class AiScreen extends StatefulWidget {
   const AiScreen({super.key});
 
   @override
-  _AiScreenState createState() => _AiScreenState();
+  State<AiScreen> createState() {
+    return _AiScreen();
+  }
 }
 
-class _AiScreenState extends State<AiScreen> {
+class _AiScreen extends State<AiScreen> {
   String? name = '';
+  int heart = 0;
 
   @override
   void initState() {
     super.initState();
     _loadName();
+    Timer.periodic(const Duration(seconds: 2), (timer) {
+      _loadName();
+    });
   }
 
   Future<void> _loadName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      name = prefs.getString('name') ?? '';
-    });
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          name = prefs.getString('name') ?? '';
+          heart = data['heartbeat'];
+        });
+      } else {
+        throw Exception('Failed to load steps');
+      }
+    } catch (e) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        name = prefs.getString('name') ?? '';
+      });
+      print(e);
+    }
   }
 
   @override
@@ -51,16 +76,16 @@ class _AiScreenState extends State<AiScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hi ${name!.isEmpty ? "" : name!}!',
-                        style: GoogleFonts.exo2(fontSize: 29),
+                        'Hi $name!',
+                        style: GoogleFonts.montserrat(fontSize: 29, fontWeight: FontWeight.w700),
                       ),
                       Text(
                         "Welcome to AI based realtime",
-                        style: GoogleFonts.exo2(),
+                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
                       ),
                       Text(
                         "health checkup system.",
-                        style: GoogleFonts.exo2(),
+                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -72,95 +97,145 @@ class _AiScreenState extends State<AiScreen> {
               ),
             ),
             const SizedBox(
-              height: 50,
+              height: 30,
             ),
-            Container(
-              margin: const EdgeInsets.only(
-                  bottom: 10.0, top: 10.0, left: 20.0, right: 20.0),
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(133, 255, 255, 255),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 5),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Card(
+                  color: Color.fromARGB(225, 255, 255, 255),
+                  margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Service Status",
-                    style: GoogleFonts.exo2(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Service Status",
+                          style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Image.asset(
+                              "assets/ai/watch.png",
+                              width: 120,
+                            ),
+                            const SizedBox(width: 55),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.watch),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Watch Status: Active",
+                                      style: GoogleFonts.roboto(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.battery_full),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Battery: 85%",
+                                      style: GoogleFonts.roboto(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 25),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Health Data:",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Current Heart Rate:",
+                                  style: GoogleFonts.roboto(fontSize: 14),
+                                ),
+                                Text(
+                                  "$heart BPM",
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 14,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Blood Pressure:",
+                                  style: GoogleFonts.roboto(fontSize: 14),
+                                ),
+                                Text(
+                                  "120/80 mmHg",
+                                  style: GoogleFonts.roboto(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Oxygen Saturation:",
+                                  style: GoogleFonts.roboto(fontSize: 14),
+                                ),
+                                Text(
+                                  "98%",
+                                  style: GoogleFonts.roboto(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            const Icon(Icons.warning, color: Colors.red),
+                            const SizedBox(width: 8),
+                            Text(
+                              "AI Analysis: Elevated heart rate detected.",
+                              style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Recommendation: Please take a few deep breaths and try to relax. If the elevated heart rate persists, consult a healthcare professional.",
+                          style: GoogleFonts.roboto(fontSize: 14),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            "assets/ai/watch.png",
-                            width: 140,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 45,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Watch Status: Active",
-                            style: GoogleFonts.exo2(fontSize: 14),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "BPM: 72",
-                            style: GoogleFonts.exo2(fontSize: 14),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Battery: 85%",
-                            style: GoogleFonts.exo2(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(133, 255, 255, 255),
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Text(
-                "Additional Information",
-                style: GoogleFonts.exo2(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
