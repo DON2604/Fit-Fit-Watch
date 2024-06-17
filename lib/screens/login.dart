@@ -94,9 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.person,
-                        color: Colors.blue[900],
+                        color: Colors.purple,
                       ),
                       labelStyle: const TextStyle(
                         color: Colors.black,
@@ -135,9 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.female,
-                              color: Colors.blue[900],
+                              color: Colors.purple,
                             ),
                             labelStyle: const TextStyle(
                               color: Colors.black,
@@ -163,9 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.timelapse_rounded,
-                              color: Colors.blue[900],
+                              color: Colors.purple,
                             ),
                             labelStyle: const TextStyle(
                               color: Colors.black,
@@ -195,9 +195,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.medical_information_rounded,
-                        color: Colors.blue[900],
+                        color: Colors.purple,
                       ),
                       labelStyle: const TextStyle(
                         color: Colors.black,

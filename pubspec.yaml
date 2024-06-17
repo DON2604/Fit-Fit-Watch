@@ -43,9 +43,6 @@ dependencies:
   simple_progress_indicators: ^0.2.0
   carousel_slider: ^4.2.1
   shared_preferences: ^2.2.3
-  google_maps_flutter: ^2.7.0
-  location: ^6.0.2
-  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -86,7 +83,6 @@ flutter:
     - assets/items/item4.jpg
     - assets/items/item5.jpg
     - assets/splashscreen/img1.png
-    - .env
 
     
 
