@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:watch/screens/splash_screen.dart';
-import 'package:watch/screens/tabs.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(
     const MaterialApp(
       home: SplashScreen()
