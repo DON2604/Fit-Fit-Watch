@@ -18,8 +18,8 @@ class AiScreen extends StatefulWidget {
 class _AiScreen extends State<AiScreen> {
   String? name = '';
   int heart = 0;
-  String hrtstat = "";
-  String wastat = '';
+  String hrtstat = "loading...";
+  String wastat = 'loading...';
   Color statcol = Colors.black;
 
   @override
