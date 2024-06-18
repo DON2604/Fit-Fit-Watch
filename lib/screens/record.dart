@@ -1,102 +1,60 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watch/providers/record_provider.dart';
+import 'package:watch/screens/record_list.dart';
 
-class RecordScreen extends StatefulWidget {
+class RecordScreen extends ConsumerStatefulWidget {
   const RecordScreen({super.key});
 
   @override
-  State<RecordScreen> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _RecordScreenState();
   }
 }
 
-class _RecordScreenState extends State<RecordScreen> {
+class _RecordScreenState extends ConsumerState<RecordScreen> {
   GoogleMapController? _controller;
   final Location _location = Location();
-
-  final Set<Polyline> _polylines = {};
-  final List<LatLng> _routeCoordinates = [];
-  bool _isRecording = false;
-  Timer? _timer;
-  int _elapsedSeconds = 0;
-  double _distanceTravelled = 0.0;
-  LatLng? _lastPosition;
 
   @override
   void initState() {
     super.initState();
     _location.onLocationChanged.listen((LocationData currentLocation) {
-      if (_isRecording) {
-        _updateRoute(LatLng(currentLocation.latitude!, currentLocation.longitude!));
+      if (ref.read(recordProvider).isRecording) {
+        ref.read(recordProvider.notifier).updateRoute(
+            LatLng(currentLocation.latitude!, currentLocation.longitude!));
       }
     });
-  }
-
-  void _startRecording() {
-    setState(() {
-      _isRecording = true;
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _elapsedSeconds += 1;
-        });
-      });
-    });
-  }
-
-  void _stopRecording() {
-    setState(() {
-      _isRecording = false;
-      _timer?.cancel();
-      _timer = null;
-      _elapsedSeconds = 0;
-      _distanceTravelled = 0.0;
-      _routeCoordinates.clear();
-      _polylines.clear();
-    });
-  }
-
-  void _updateRoute(LatLng position) {
-    setState(() {
-      if (_lastPosition != null) {
-        _distanceTravelled += _calculateDistance(_lastPosition!, position);
-      }
-      _lastPosition = position;
-      _routeCoordinates.add(position);
-      _polylines.add(Polyline(
-        polylineId: const PolylineId('route'),
-        points: _routeCoordinates,
-        color: Colors.blue,
-        width: 5,
-      ));
-    });
-  }
-
-  double _calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371e3; // metres
-    final double phi1 = start.latitude * (3.14159 / 180);
-    final double phi2 = end.latitude * (3.14159 / 180);
-    final double deltaPhi = (end.latitude - start.latitude) * (3.14159 / 180);
-    final double deltaLambda = (end.longitude - start.longitude) * (3.14159 / 180);
-
-    final double a = (sin(deltaPhi / 2) * sin(deltaPhi / 2)) +
-        (cos(phi1) * cos(phi2) * sin(deltaLambda / 2) * sin(deltaLambda / 2));
-    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c / 1000; // returns the distance in kilometers
   }
 
   @override
   Widget build(BuildContext context) {
+    final recordingState = ref.watch(recordProvider);
+    final recordingNotifier = ref.read(recordProvider.notifier);
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Record'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RecordListScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Column(
             children: [
-              Container(
-                height: constraints.maxHeight * 0.7,
+              SizedBox(
+                height: constraints.maxHeight * 0.8,
                 child: GoogleMap(
                   initialCameraPosition: const CameraPosition(
                     target: LatLng(37.42796133580664, -122.085749655962),
@@ -108,7 +66,8 @@ class _RecordScreenState extends State<RecordScreen> {
                       _controller!.animateCamera(
                         CameraUpdate.newCameraPosition(
                           CameraPosition(
-                            target: LatLng(location.latitude!, location.longitude!),
+                            target:
+                                LatLng(location.latitude!, location.longitude!),
                             zoom: 15,
                           ),
                         ),
@@ -116,27 +75,37 @@ class _RecordScreenState extends State<RecordScreen> {
                     });
                   },
                   myLocationEnabled: true,
-                  polylines: _polylines,
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId('route'),
+                      points: recordingState.routeCoordinates,
+                      color: Colors.blue,
+                      width: 5,
+                    ),
+                  },
                 ),
               ),
               Container(
-                height: constraints.maxHeight * 0.3,
-                padding: const EdgeInsets.all(16.0),
+                height: constraints.maxHeight * 0.2,
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Time: ${_elapsedSeconds ~/ 60}:${(_elapsedSeconds % 60).toString().padLeft(2, '0')}',
-                      style: const TextStyle(fontSize: 24),
+                      'Time: ${recordingState.elapsedSeconds ~/ 60}:${(recordingState.elapsedSeconds % 60).toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontSize: 20),
                     ),
                     Text(
-                      'Distance: ${_distanceTravelled.toStringAsFixed(2)} km',
-                      style: const TextStyle(fontSize: 24),
+                      'Distance: ${recordingState.distanceTravelled.toStringAsFixed(2)} km',
+                      style: const TextStyle(fontSize: 20),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: _isRecording ? _stopRecording : _startRecording,
-                      child: Text(_isRecording ? 'Stop' : 'Start'),
+                      onPressed: recordingState.isRecording
+                          ? recordingNotifier.stopRecording
+                          : recordingNotifier.startRecording,
+                      child:
+                          Text(recordingState.isRecording ? 'Stop' : 'Start'),
                     ),
                   ],
                 ),
@@ -151,7 +120,7 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   void dispose() {
     _controller?.dispose();
-    _timer?.cancel();
+    ref.read(recordProvider.notifier).stopRecording();
     super.dispose();
   }
 }

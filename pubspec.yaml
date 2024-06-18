@@ -46,6 +46,13 @@ dependencies:
   google_maps_flutter: ^2.7.0
   location: ^6.0.2
   flutter_dotenv: ^5.1.0
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  flutter_riverpod: ^2.5.1
+  ml_algo: ^16.17.10
+  google_fonts: ^6.2.1
+  csv: ^5.1.1
+  ml_dataframe: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +93,10 @@ flutter:
     - assets/items/item4.jpg
     - assets/items/item5.jpg
     - assets/splashscreen/img1.png
+    - assets/ai/ai1.gif
+    - assets/ai/ai2.gif
+    - assets/ai/hrt.gif
+    - assets/ai/watch.png
     - .env
 
     
