@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart' as http;
+import 'package:watch/backend/aipro.dart';
 import 'package:watch/screens/achivements.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -25,6 +26,7 @@ class _ColData extends State<ColData> {
     super.initState();
     _fetchSteps();
     Timer.periodic(const Duration(seconds: 2), (timer) {
+       rain();
       _fetchSteps();
     });
   }

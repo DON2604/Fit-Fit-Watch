@@ -441,7 +441,7 @@ packages:
     source: hosted
     version: "13.12.6"
   ml_preprocessing:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: ml_preprocessing
       sha256: fdc7bdf65e53bf377db2ac6ad017d88f08d81827e1c6062b9348893c0bab9f26

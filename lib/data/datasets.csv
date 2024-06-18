@@ -199,5 +199,3 @@ ID,Age,Gender,Heart Rate (bpm),Diseases,Outside Temperature (°C),Health Status,
 198,67,Female,110,Osteoporosis,31,Not OK,"Ensure adequate calcium intake, prevent falls"
 199,38,Male,80,Healthy,24,OK,"Maintain regular physical activity, balanced diet"
 200,58,Female,100,Hypertension,29,Not OK,"Monitor blood pressure, follow low-sodium diet"
-
-
