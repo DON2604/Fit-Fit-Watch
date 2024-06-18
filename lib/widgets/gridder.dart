@@ -25,7 +25,7 @@ class _Gridder extends State<Gridder> {
 
   Future<void> _fetchBeat() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
+      final response = await http.get(Uri.parse('http://192.168.29.190:5000/heartbeat'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {

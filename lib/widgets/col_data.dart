@@ -32,7 +32,7 @@ class _ColData extends State<ColData> {
   Future<void> _fetchSteps() async {
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.0.101:5000/steps'));
+          await http.get(Uri.parse('http://192.168.29.190:5000/steps'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
