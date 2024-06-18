@@ -1,34 +1,25 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watch/providers/heart_rate_provider.dart'; // Import the provider
 
-class AiScreen extends StatefulWidget {
+class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({super.key});
 
   @override
-  State<AiScreen> createState() {
+  ConsumerState<AiScreen> createState() {
     return _AiScreen();
   }
 }
 
-class _AiScreen extends State<AiScreen> {
+class _AiScreen extends ConsumerState<AiScreen> {
   String? name = '';
-  int heart = 0;
-  String hrtstat = "loading...";
-  String wastat = 'loading...';
-  Color statcol = Colors.black;
 
   @override
   void initState() {
     super.initState();
     _loadName();
-    Timer.periodic(const Duration(seconds: 2), (timer) {
-      _loadHeartStatus();
-    });
   }
 
   Future<void> _loadName() async {
@@ -38,33 +29,10 @@ class _AiScreen extends State<AiScreen> {
     });
   }
 
-  Future<void> _loadHeartStatus() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          statcol = const Color.fromARGB(255, 9, 186, 15);
-          wastat = "Active";
-          heart = data['heartbeat'];
-          hrtstat = "$heart BPM";
-        });
-      } else {
-        throw Exception('Failed to load heartbeat');
-      }
-    } catch (e) {
-      setState(() {
-        statcol = const Color.fromARGB(255, 183, 17, 5);
-        wastat = "Inactive";
-        hrtstat = "Unavialable";
-      });
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final heartRateState = ref.watch(heartRateProvider);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -125,14 +93,14 @@ class _AiScreen extends State<AiScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(top:12 ,left:16.0,right:16.0,bottom:16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Service Status",
                           style: GoogleFonts.montserrat(
-                            fontSize: 16,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -156,10 +124,10 @@ class _AiScreen extends State<AiScreen> {
                                       style: GoogleFonts.roboto(fontSize: 14),
                                     ),
                                     Text(
-                                      wastat,
+                                      heartRateState.wastat,
                                       style: GoogleFonts.roboto(
                                           fontSize: 14,
-                                          color: statcol,
+                                          color: heartRateState.statcol,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
@@ -186,7 +154,7 @@ class _AiScreen extends State<AiScreen> {
                             Text(
                               "Health Data:",
                               style: GoogleFonts.montserrat(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -199,7 +167,7 @@ class _AiScreen extends State<AiScreen> {
                                   style: GoogleFonts.roboto(fontSize: 14),
                                 ),
                                 Text(
-                                  hrtstat,
+                                  heartRateState.hrtstat,
                                   style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: Colors.red,
@@ -243,7 +211,7 @@ class _AiScreen extends State<AiScreen> {
                             Text(
                               "AI Analysis:",
                               style: GoogleFonts.montserrat(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
