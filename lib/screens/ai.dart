@@ -18,33 +18,46 @@ class AiScreen extends StatefulWidget {
 class _AiScreen extends State<AiScreen> {
   String? name = '';
   int heart = 0;
+  String hrtstat = "";
+  String wastat = '';
+  Color statcol = Colors.black;
 
   @override
   void initState() {
     super.initState();
     _loadName();
     Timer.periodic(const Duration(seconds: 2), (timer) {
-      _loadName();
+      _loadHeartStatus();
     });
   }
 
   Future<void> _loadName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name') ?? '';
+    });
+  }
+
+  Future<void> _loadHeartStatus() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final response = await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
+      final response =
+          await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          name = prefs.getString('name') ?? '';
+          statcol = const Color.fromARGB(255, 9, 186, 15);
+          wastat = "Active";
           heart = data['heartbeat'];
+          hrtstat = "$heart BPM";
         });
       } else {
-        throw Exception('Failed to load steps');
+        throw Exception('Failed to load heartbeat');
       }
     } catch (e) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
-        name = prefs.getString('name') ?? '';
+        statcol = const Color.fromARGB(255, 183, 17, 5);
+        wastat = "Inactive";
+        hrtstat = "Unavialable";
       });
       print(e);
     }
@@ -77,15 +90,18 @@ class _AiScreen extends State<AiScreen> {
                     children: [
                       Text(
                         'Hi $name!',
-                        style: GoogleFonts.montserrat(fontSize: 29, fontWeight: FontWeight.w700),
+                        style: GoogleFonts.montserrat(
+                            fontSize: 29, fontWeight: FontWeight.w700),
                       ),
                       Text(
                         "Welcome to AI based realtime",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                        style:
+                            GoogleFonts.montserrat(fontWeight: FontWeight.w500),
                       ),
                       Text(
                         "health checkup system.",
-                        style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                        style:
+                            GoogleFonts.montserrat(fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -102,7 +118,7 @@ class _AiScreen extends State<AiScreen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Card(
-                  color: Color.fromARGB(225, 255, 255, 255),
+                  color: const Color.fromARGB(225, 255, 255, 255),
                   margin: const EdgeInsets.only(left: 15.0, right: 15.0),
                   elevation: 4,
                   shape: RoundedRectangleBorder(
@@ -136,8 +152,15 @@ class _AiScreen extends State<AiScreen> {
                                     const Icon(Icons.watch),
                                     const SizedBox(width: 8),
                                     Text(
-                                      "Watch Status: Active",
+                                      "Status: ",
                                       style: GoogleFonts.roboto(fontSize: 14),
+                                    ),
+                                    Text(
+                                      wastat,
+                                      style: GoogleFonts.roboto(
+                                          fontSize: 14,
+                                          color: statcol,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -176,7 +199,7 @@ class _AiScreen extends State<AiScreen> {
                                   style: GoogleFonts.roboto(fontSize: 14),
                                 ),
                                 Text(
-                                  "$heart BPM",
+                                  hrtstat,
                                   style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: Colors.red,
@@ -214,13 +237,27 @@ class _AiScreen extends State<AiScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 22),
+                        Row(
+                          children: [
+                            Text(
+                              "AI Analysis:",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
                         Row(
                           children: [
                             const Icon(Icons.warning, color: Colors.red),
-                            const SizedBox(width: 8),
+                            const SizedBox(
+                              width: 10,
+                            ),
                             Text(
-                              "AI Analysis: Elevated heart rate detected.",
+                              "Elevated heart rate detected.",
                               style: GoogleFonts.roboto(
                                 fontSize: 14,
                                 color: Colors.red,
@@ -228,7 +265,9 @@ class _AiScreen extends State<AiScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(
+                          height: 7,
+                        ),
                         Text(
                           "Recommendation: Please take a few deep breaths and try to relax. If the elevated heart rate persists, consult a healthcare professional.",
                           style: GoogleFonts.roboto(fontSize: 14),
