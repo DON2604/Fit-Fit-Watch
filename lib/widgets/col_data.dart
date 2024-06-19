@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart' as http;
-import 'package:watch/backend/aipro.dart';
+import 'package:watch/backend/aipro2.dart';
+import 'package:watch/backend/training.dart';
 import 'package:watch/screens/achivements.dart';
 import 'dart:convert';
 import 'dart:async';

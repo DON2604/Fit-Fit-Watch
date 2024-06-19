@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watch/providers/heart_rate_provider.dart'; // Import the provider
+import 'package:watch/providers/heart_rate_provider.dart'; 
+import 'package:watch/providers/temperature_provider.dart';
 
 class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({super.key});
@@ -14,6 +15,7 @@ class AiScreen extends ConsumerStatefulWidget {
 }
 
 class _AiScreen extends ConsumerState<AiScreen> {
+
   String? name = '';
 
   @override
@@ -31,6 +33,8 @@ class _AiScreen extends ConsumerState<AiScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AsyncValue<String> temperatureData = ref.watch(temperatureProvider);
+    print(temperatureData.value);
     final heartRateState = ref.watch(heartRateProvider);
 
     return Scaffold(

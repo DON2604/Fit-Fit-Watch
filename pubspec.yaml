@@ -54,6 +54,7 @@ dependencies:
   csv: ^5.1.1
   ml_dataframe: ^1.6.0
   ml_preprocessing: ^7.0.2
+  path_provider: ^2.1.3
 
 dev_dependencies:
   flutter_test:
@@ -99,7 +100,8 @@ flutter:
     - assets/ai/hrt.gif
     - assets/ai/watch.png
     - .env
-    - lib/data/housing.csv
+    - lib/data/datasets.csv
+    - lib/backend/classifier.json
 
     
 
