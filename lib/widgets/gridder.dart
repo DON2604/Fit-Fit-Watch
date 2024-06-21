@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -12,6 +13,7 @@ class Gridder extends StatefulWidget {
 }
 
 class _Gridder extends State<Gridder> {
+  final ip=dotenv.env["IP"];
   int heart = 0;
 
   @override
@@ -25,7 +27,7 @@ class _Gridder extends State<Gridder> {
 
   Future<void> _fetchBeat() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.29.190:5000/heartbeat'));
+      final response = await http.get(Uri.parse('http://$ip/heartbeat'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {

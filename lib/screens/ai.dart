@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:watch/backend/aipro2.dart';
 import 'package:watch/providers/heart_rate_provider.dart'; 
-import 'package:watch/providers/temperature_provider.dart';
 
 class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({super.key});
@@ -17,11 +19,18 @@ class AiScreen extends ConsumerStatefulWidget {
 class _AiScreen extends ConsumerState<AiScreen> {
 
   String? name = '';
+  dynamic predictionResult = '';
+  String? previousHeartRate;
 
   @override
   void initState() {
     super.initState();
     _loadName();
+    _fetchPrediction();
+    Timer.periodic(const Duration(seconds: 2), (timer) {
+      _fetchPrediction();
+    });
+    previousHeartRate = '';
   }
 
   Future<void> _loadName() async {
@@ -31,11 +40,26 @@ class _AiScreen extends ConsumerState<AiScreen> {
     });
   }
 
+
+  Future<void> _fetchPrediction() async {
+    try {
+      List prediction = await rain();
+      setState(() {
+        print(prediction);
+        predictionResult = prediction.isNotEmpty ? prediction[0] : 'No prediction available';
+        predictionResult = (predictionResult==0.0)? "OK":"NOT OK";
+      });
+    } catch (e) {
+      setState(() {
+        predictionResult = 'Error: $e';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    AsyncValue<String> temperatureData = ref.watch(temperatureProvider);
-    print(temperatureData.value);
     final heartRateState = ref.watch(heartRateProvider);
+
 
     return Scaffold(
       body: Container(
@@ -241,7 +265,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
                           height: 7,
                         ),
                         Text(
-                          "Recommendation: Please take a few deep breaths and try to relax. If the elevated heart rate persists, consult a healthcare professional.",
+                          predictionResult!.toString(),
                           style: GoogleFonts.roboto(fontSize: 14),
                         ),
                       ],

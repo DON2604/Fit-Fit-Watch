@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,6 +24,7 @@ class HeartRateState {
 }
 
 class HeartRateNotifier extends StateNotifier<HeartRateState> {
+  final ip=dotenv.env["IP"];
   HeartRateNotifier() : super(HeartRateState()) {
     Timer.periodic(const Duration(seconds: 2), (timer) {
       _loadHeartStatus();
@@ -31,7 +33,7 @@ class HeartRateNotifier extends StateNotifier<HeartRateState> {
 
   Future<void> _loadHeartStatus() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.0.101:5000/heartbeat'));
+      final response = await http.get(Uri.parse('http://$ip/heartbeat'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         state = HeartRateState(

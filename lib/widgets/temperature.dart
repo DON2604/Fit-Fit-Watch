@@ -13,7 +13,7 @@ class Temperature extends ConsumerWidget {
 
     return Center(
     child: temperatureData.when(
-    loading: () => const CircularProgressIndicator(),
+    loading: () => const CircularProgressIndicator(color: Colors.white,),
     error: (error, stackTrace) => Text('Error: $error'),
     data: (temperature) => Text(
       temperature,
