@@ -1,11 +1,14 @@
 import 'dart:async';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:watch/backend/aipro2.dart';
-import 'package:watch/providers/heart_rate_provider.dart'; 
+import 'package:watch/data/rec.dart';
+import 'package:watch/providers/heart_rate_provider.dart';
 
 class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({super.key});
@@ -17,10 +20,11 @@ class AiScreen extends ConsumerStatefulWidget {
 }
 
 class _AiScreen extends ConsumerState<AiScreen> {
-
   String? name = '';
-  dynamic predictionResult = '';
-  String? previousHeartRate;
+  dynamic predictionResult = 'Crunching your Data...';
+  String res = 'Processing...';
+  String prevpred = '';
+  var dynamicIcon = const Icon(Icons.warning, color: Colors.red);
 
   @override
   void initState() {
@@ -30,7 +34,6 @@ class _AiScreen extends ConsumerState<AiScreen> {
     Timer.periodic(const Duration(seconds: 2), (timer) {
       _fetchPrediction();
     });
-    previousHeartRate = '';
   }
 
   Future<void> _loadName() async {
@@ -40,14 +43,25 @@ class _AiScreen extends ConsumerState<AiScreen> {
     });
   }
 
-
   Future<void> _fetchPrediction() async {
     try {
       List prediction = await rain();
       setState(() {
-        print(prediction);
-        predictionResult = prediction.isNotEmpty ? prediction[0] : 'No prediction available';
-        predictionResult = (predictionResult==0.0)? "OK":"NOT OK";
+        predictionResult =
+            prediction.isNotEmpty ? prediction[0] : 'No prediction available';
+        if (predictionResult == 0.0) {
+          predictionResult = "HEALTH STATUS NORMAL";
+        } else {
+          predictionResult = "ABNORMAL HEALTH STATUS DETECTED";
+        }
+        List<String> selectedRecommendations =
+            recommendations[predictionResult]!;
+
+        if (predictionResult != prevpred) {
+          res = selectedRecommendations[
+              Random().nextInt(selectedRecommendations.length)];
+          prevpred = predictionResult;
+        }
       });
     } catch (e) {
       setState(() {
@@ -59,7 +73,6 @@ class _AiScreen extends ConsumerState<AiScreen> {
   @override
   Widget build(BuildContext context) {
     final heartRateState = ref.watch(heartRateProvider);
-
 
     return Scaffold(
       body: Container(
@@ -121,7 +134,8 @@ class _AiScreen extends ConsumerState<AiScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(top:12 ,left:16.0,right:16.0,bottom:16.0),
+                    padding: const EdgeInsets.only(
+                        top: 12, left: 16.0, right: 16.0, bottom: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -247,16 +261,24 @@ class _AiScreen extends ConsumerState<AiScreen> {
                         ),
                         const SizedBox(height: 8),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.warning, color: Colors.red),
+                            (predictionResult ==
+                                    "ABNORMAL HEALTH STATUS DETECTED")
+                                ? const Icon(Icons.warning, color: Colors.red)
+                                : const Icon(FontAwesome.check_circle,
+                                    color: Colors.green),
                             const SizedBox(
                               width: 10,
                             ),
                             Text(
-                              "Elevated heart rate detected.",
+                              predictionResult,
                               style: GoogleFonts.roboto(
                                 fontSize: 14,
-                                color: Colors.red,
+                                color: predictionResult ==
+                                        "ABNORMAL HEALTH STATUS DETECTED"
+                                    ? const Color.fromARGB(255, 154, 14, 4)
+                                    : const Color.fromARGB(255, 5, 116, 8),
                               ),
                             ),
                           ],
@@ -264,9 +286,25 @@ class _AiScreen extends ConsumerState<AiScreen> {
                         const SizedBox(
                           height: 7,
                         ),
-                        Text(
-                          predictionResult!.toString(),
-                          style: GoogleFonts.roboto(fontSize: 14),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 7,
+                            ),
+                            Text(
+                              "Recommendations:",
+                              style: GoogleFonts.roboto(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              res,
+                              style: GoogleFonts.roboto(fontSize: 14),
+                            ),
+                          ],
                         ),
                       ],
                     ),

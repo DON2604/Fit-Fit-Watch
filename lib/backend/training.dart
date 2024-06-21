@@ -4,7 +4,7 @@ import 'package:ml_dataframe/ml_dataframe.dart';
 import 'package:ml_preprocessing/ml_preprocessing.dart';
 import 'package:path_provider/path_provider.dart';
 
-void main() async {
+void train() async {
   final rawCsvContent = await rootBundle.loadString('lib/data/datasets.csv');
   print(rawCsvContent);
 
