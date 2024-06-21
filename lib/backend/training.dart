@@ -9,20 +9,20 @@ void train() async {
   print(rawCsvContent);
 
   final samples = DataFrame.fromRawCsv(rawCsvContent, fieldDelimiter: ',')
-      .dropSeries(names: ['ID', "Recommendation"]);
+      .dropSeries(names: ['ID', 'Recommendation']);
   print(samples.header);
 
   final pipeline = Pipeline(samples, [
-    toIntegerLabels(columnNames: ['Gender', "Health Status","Diseases"]),
+    toIntegerLabels(columnNames: ['Gender', 'Health Status','Diseases']),
   ]);
   final processed = pipeline.process(samples);
   print(processed);
 
   
 
-  final splits = splitData(processed, [0.8]);
-  final trainData = splits[0];
-  final testData = splits[1];
+final splits = splitData(processed, [0.8]);
+final trainData = splits[0];
+final testData = splits[1];
 
  
   final model = LogisticRegressor(
@@ -43,7 +43,7 @@ void train() async {
   print(error);
 
   print(model.predict(DataFrame([
-    ["Age", "Gender", "Heart Rate","Diseases", "Outside Temperature (°C)"],
+    ["Age", "Gender", "Heart Rate","Diseases", "Outside Temperature"],
     [90, 1, 110,2, 22],
   ])));
 }
