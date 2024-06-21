@@ -9,20 +9,18 @@ void train() async {
   print(rawCsvContent);
 
   final samples = DataFrame.fromRawCsv(rawCsvContent, fieldDelimiter: ',')
-      .dropSeries(names: ['ID', 'Recommendation']);
+      .dropSeries(names: ['ID']);
   print(samples.header);
 
   final pipeline = Pipeline(samples, [
-    toIntegerLabels(columnNames: ['Gender', 'Health Status','Diseases']),
+    toIntegerLabels(columnNames: [ 'Health Status', 'Gender']),
   ]);
   final processed = pipeline.process(samples);
   print(processed);
 
-  
-
-final splits = splitData(processed, [0.8]);
-final trainData = splits[0];
-final testData = splits[1];
+  final splits = splitData(processed, [0.8]);
+  final trainData = splits[0];
+  final testData = splits[1];
 
  
   final model = LogisticRegressor(
@@ -31,19 +29,18 @@ final testData = splits[1];
     learningRateType: LearningRateType.constant,
    );
 
-
   final directory = await getApplicationDocumentsDirectory();
   final pathToFile = '${directory.path}/classifier.json';
   await model.saveAsJson(pathToFile);
   print(pathToFile);
- ///data/user/0/com.example.watch/app_flutter/classifier.json
 
+  ///data/user/0/com.example.watch/app_flutter/classifier.json
 
   final error = model.assess(testData, MetricType.accuracy);
   print(error);
 
   print(model.predict(DataFrame([
-    ["Age", "Gender", "Heart Rate","Diseases", "Outside Temperature"],
-    [90, 1, 110,2, 22],
+    ["Age", "Gender", "Heart Rate", "Outside Temperature"],
+    [80,1,80, 30],
   ])));
 }

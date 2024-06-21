@@ -8,7 +8,6 @@ import 'package:ml_dataframe/ml_dataframe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 Future<List> rain() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String age = prefs.getString('age') ?? '';
@@ -16,8 +15,7 @@ Future<List> rain() async {
   String gender = prefs.getString('gender') ?? '';
   gender = (gender == 'male') ? "1" : "0";
 
-
-  final ip=dotenv.env["IP"];
+  final ip = dotenv.env["IP"];
   final directory = await getApplicationDocumentsDirectory();
   final pathToFile = '${directory.path}/classifier.json';
 
@@ -32,7 +30,7 @@ Future<List> rain() async {
   Future<void> fetchSteps() async {
     try {
       final response = await http.get(Uri.parse('http://$ip/heartbeat'));
-              print(response);
+      print(response);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         hrt = data['heartbeat'];
@@ -66,12 +64,12 @@ Future<List> rain() async {
 
   // Use the updated hrt and temp values in the prediction
   final prediction = model.predict(DataFrame([
-    ["Age", "Gender", "Heart Rate", "Diseases", "Outside Temperature (°C)"],
-    [age, 1, hrt, 2, temp],
+    ["Age", "Gender", "Heart Rate", "Outside Temperature"],
+    [age, gender, hrt, temp],
   ]));
 
   List res = [];
-  print(hrt);
+  print({hrt, gender});
   res.add(prediction.rows.first.first);
   print(prediction.rows.first.first);
   return (res);
