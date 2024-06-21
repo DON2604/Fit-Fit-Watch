@@ -30,92 +30,106 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final recordingState = ref.watch(recordProvider);
-    final recordingNotifier = ref.read(recordProvider.notifier);
+Widget build(BuildContext context) {
+  final recordingState = ref.watch(recordProvider);
+  final recordingNotifier = ref.read(recordProvider.notifier);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Record'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RecordListScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Column(
-            children: [
-              SizedBox(
-                height: constraints.maxHeight * 0.8,
-                child: GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(37.42796133580664, -122.085749655962),
-                    zoom: 14,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller = controller;
-                    _location.getLocation().then((location) {
-                      _controller!.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                            target:
-                                LatLng(location.latitude!, location.longitude!),
-                            zoom: 15,
-                          ),
-                        ),
-                      );
-                    });
-                  },
-                  myLocationEnabled: true,
-                  polylines: {
-                    Polyline(
-                      polylineId: const PolylineId('route'),
-                      points: recordingState.routeCoordinates,
-                      color: Colors.blue,
-                      width: 5,
-                    ),
-                  },
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Record'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.history),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RecordListScreen()),
+            );
+          },
+        ),
+      ],
+    ),
+    body: LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            SizedBox(
+              height: constraints.maxHeight * 0.8,
+              child: GoogleMap(
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(37.42796133580664, -122.085749655962),
+                  zoom: 14,
                 ),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller = controller;
+                  _location.getLocation().then((location) {
+                    _controller!.animateCamera(
+                      CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                          target: LatLng(location.latitude!, location.longitude!),
+                          zoom: 15,
+                        ),
+                      ),
+                    );
+                  });
+                },
+                myLocationEnabled: true,
+                polylines: {
+                  Polyline(
+                    polylineId: const PolylineId('route'),
+                    points: recordingState.routeCoordinates,
+                    color: Colors.blue,
+                    width: 5,
+                  ),
+                },
               ),
-              Container(
-                height: constraints.maxHeight * 0.2,
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Time: ${recordingState.elapsedSeconds ~/ 60}:${(recordingState.elapsedSeconds % 60).toString().padLeft(2, '0')}',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      'Distance: ${recordingState.distanceTravelled.toStringAsFixed(2)} km',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(height: 10),
+            ),
+            Container(
+              height: constraints.maxHeight * 0.2,
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Time: ${recordingState.elapsedSeconds ~/ 60}:${(recordingState.elapsedSeconds % 60).toString().padLeft(2, '0')}',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    'Distance: ${recordingState.distanceTravelled.toStringAsFixed(2)} km',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 10),
+                  if (recordingState.showSaveDiscardButtons) 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: recordingNotifier.saveRecord,
+                          child: const Text('Save'),
+                        ),
+                        ElevatedButton(
+                          onPressed: recordingNotifier.discardRecord,
+                          child: const Text('Discard'),
+                        ),
+                      ],
+                    )
+                  else 
                     ElevatedButton(
                       onPressed: recordingState.isRecording
                           ? recordingNotifier.stopRecording
                           : recordingNotifier.startRecording,
-                      child:
-                          Text(recordingState.isRecording ? 'Stop' : 'Start'),
+                      child: Text(recordingState.isRecording ? 'Stop' : 'Start'),
                     ),
-                  ],
-                ),
+                ],
               ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
 
   @override
   void dispose() {
