@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch/backend/training.dart';
 import 'package:watch/screens/splash_screen.dart';
@@ -15,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final nameController = TextEditingController();
   final genderController = TextEditingController();
   final ageController = TextEditingController();
+  final heightController = TextEditingController();
+  final weightController = TextEditingController();
   final diseaseController = TextEditingController();
   String? selectedGender;
   final List<String> genderOptions = ['Male', 'Female', 'Other'];
@@ -28,8 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
     nameController.addListener(validateForm);
     genderController.addListener(validateForm);
     ageController.addListener(validateForm);
-    diseaseController
-        .addListener(validateForm); 
+    heightController.addListener(validateForm);
+    weightController.addListener(validateForm);
+    diseaseController.addListener(validateForm);
   }
 
   @override
@@ -38,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
     nameController.dispose();
     genderController.dispose();
     ageController.dispose();
-    diseaseController.dispose(); // Dispose Disease controller
+    heightController.dispose();
+    weightController.dispose();
+    diseaseController.dispose();
     super.dispose();
   }
 
@@ -47,6 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _isFormValid = nameController.text.isNotEmpty &&
           selectedGender != null &&
           ageController.text.isNotEmpty &&
+          heightController.text.isNotEmpty &&
+          weightController.text.isNotEmpty &&
           diseaseController.text.isNotEmpty; // Validate Disease field
     });
   }
@@ -184,6 +192,70 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: TextField(
+                          controller: weightController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Weight',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            prefixIcon: Icon(
+                              FontAwesome5Solid.weight_hanging,
+                              color: Colors.blue[900],
+                            ),
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 15.0),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: TextField(
+                          controller: heightController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Height',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            prefixIcon: Icon(
+                              MaterialCommunityIcons.human_male_height_variant,
+                              color: Colors.blue[900],
+                            ),
+                            labelStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 15.0),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: TextField(
@@ -230,6 +302,10 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs.setString("age", age);
     var gender = selectedGender!;
     prefs.setString("gender", gender);
+    var height = heightController.text.toString();
+    prefs.setString("height", height);
+    var weight = weightController.text.toString();
+    prefs.setString("weight", weight);
     var disease = diseaseController.text.toString();
     prefs.setString("disease", disease);
     var sharedPref = await SharedPreferences.getInstance();

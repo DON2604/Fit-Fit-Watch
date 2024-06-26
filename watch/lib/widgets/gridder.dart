@@ -5,7 +5,17 @@ import 'dart:convert';
 import 'dart:async';
 
 class Gridder extends StatefulWidget {
-  const Gridder({super.key});
+  const Gridder({
+    super.key,
+    required this.totalDistanceToday,
+    required this.totalStepsToday,
+    required this.totalCaloriesToday,
+  });
+
+  final double totalDistanceToday;
+  final int totalStepsToday;
+  final double totalCaloriesToday;
+
   @override
   State<Gridder> createState() {
     return _Gridder();
@@ -13,19 +23,23 @@ class Gridder extends StatefulWidget {
 }
 
 class _Gridder extends State<Gridder> {
-  final ip=dotenv.env["IP"];
+  late final String? ip;
   int heart = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchBeat();
-    Timer.periodic(const Duration(seconds: 2), (timer) {
+    ip = dotenv.env["IP"];
+    if (ip != null) {
       _fetchBeat();
-    });
+      Timer.periodic(const Duration(seconds: 2), (timer) {
+        _fetchBeat();
+      });
+    }
   }
 
   Future<void> _fetchBeat() async {
+    if (ip == null) return;
     try {
       final response = await http.get(Uri.parse('http://$ip/heartbeat'));
       if (response.statusCode == 200) {
@@ -34,16 +48,15 @@ class _Gridder extends State<Gridder> {
           heart = data['heartbeat'];
         });
       } else {
-        throw Exception('Failed to load steps');
+        throw Exception('Failed to load heartbeat');
       }
     } catch (e) {
       print(e);
     }
   }
 
-
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.count(
@@ -51,26 +64,51 @@ class _Gridder extends State<Gridder> {
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
         children: [
-          buildHealthCard('Steps', '9999', 'Steps', Icons.run_circle_outlined,
-              const Color.fromARGB(112, 255, 224, 178), Colors.orange),
-          buildHealthCard('Heart rate', '$heart', 'bpm', Icons.favorite_border,
-              const Color.fromARGB(112, 187, 222, 251), Colors.blue),
-          buildHealthCard('Sleep', '7.5', 'hours', Icons.nights_stay,
-              const Color.fromARGB(112, 178, 235, 242), Colors.cyan),
           buildHealthCard(
-              'Calories',
-              '0.0',
-              'Kcal',
-              Icons.local_fire_department,
-              const Color.fromARGB(112, 255, 236, 179),
-              Colors.amber),
+            'Steps',
+            widget.totalStepsToday.toString(),
+            'Steps',
+            Icons.run_circle_outlined,
+            const Color.fromARGB(112, 255, 224, 178),
+            Colors.orange,
+          ),
+          buildHealthCard(
+            'Heart rate',
+            heart.toString(),
+            'bpm',
+            Icons.favorite_border,
+            const Color.fromARGB(112, 187, 222, 251),
+            Colors.blue,
+          ),
+          buildHealthCard(
+            'Distance',
+            widget.totalDistanceToday.toStringAsFixed(2),
+            'km',
+            Icons.directions_walk,
+            const Color.fromARGB(112, 178, 235, 242),
+            Colors.cyan,
+          ),
+          buildHealthCard(
+            'Calories',
+            widget.totalCaloriesToday.toStringAsFixed(2),
+            'Kcal',
+            Icons.local_fire_department,
+            const Color.fromARGB(112, 255, 236, 179),
+            Colors.amber,
+          ),
         ],
       ),
     );
   }
 
-  Widget buildHealthCard(String title, String value, String unit, IconData icon,
-      Color backgroundColor, Color iconColor) {
+  Widget buildHealthCard(
+    String title,
+    String value,
+    String unit,
+    IconData icon,
+    Color backgroundColor,
+    Color iconColor,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
