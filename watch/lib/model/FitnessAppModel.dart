@@ -46,7 +46,7 @@ class FitnessAppModel extends ChangeNotifier {
   }
 
   Future<void> getAbi() async {
-    String abiStringFile = await rootBundle.loadString("src/abis/FitnessApp.json");
+    String abiStringFile = await rootBundle.loadString("watch/src/abis/FitnessApp.json");
     var abiJson = jsonDecode(abiStringFile);
     _abiCode = jsonEncode(abiJson["abi"]);
     _contractAddress = EthereumAddress.fromHex(abiJson["address"]["networks"]["5777"]["address"]);
