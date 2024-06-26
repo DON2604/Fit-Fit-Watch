@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, unused_import, file_names, non_constant_identifier_names
+// ignore_for_file: unused_field, unused_import, file_names, non_constant_identifier_names, avoid_print
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -51,6 +51,7 @@ class FitnessAppModel extends ChangeNotifier {
     _abiCode = jsonEncode(abiJson["abi"]);
     _contractAddress = EthereumAddress.fromHex(abiJson["address"]["networks"]["5777"]["address"]);
     
+    
   }
 
   Future<void> getCredentials() async {
@@ -70,6 +71,7 @@ class FitnessAppModel extends ChangeNotifier {
     _getItemPrice = _contract!.function("getItemPrice");
     _CoinsEarned = _contract!.event("CoinsEarned");
     _ItemBought = _contract!.event("ItemBought");
+    
   }
 }
 
