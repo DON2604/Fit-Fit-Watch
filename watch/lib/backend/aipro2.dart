@@ -14,8 +14,10 @@ Future<List> rain() async {
   String disease = prefs.getString('disease') ?? '';
   String gender = prefs.getString('gender') ?? '';
   gender = (gender == 'male') ? "1" : "0";
-  double latitude = 0;
-  double longitude = 0;
+    Position position = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high);
+    double latitude = position.latitude;
+    double longitude = position.longitude;
   String? name = prefs.getString('name') ?? '';
 
   final ip = dotenv.env["IP"];
@@ -43,11 +45,6 @@ Future<List> rain() async {
     } catch (e) {
       print(e);
     }
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double latitude = position.latitude;
-    double longitude = position.longitude;
 
     String apiKey = 'e1896349d647ae5208c3f5bea5d107c9';
     String url =
@@ -78,7 +75,8 @@ Future<List> rain() async {
 
   // Example of sending data if condition is met
   if (res[0] != 0.0) {
-    String sendUrl = 'http://192.168.0.101:5000/send/$name/$latitude/$longitude/emergency';
+    String sendUrl = 'http://192.168.0.104:5000/send/$name/$latitude/$longitude/emergency';
+    print('$latitude');
     http.get(Uri.parse(sendUrl));
   }
 

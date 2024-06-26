@@ -36,7 +36,7 @@ class NotificationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
 
   Future<void> fetchNotifications() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.0.101:5000/notifs'));
+      final response = await http.get(Uri.parse('http://192.168.0.104:5000/notifs'));
       if (response.statusCode == 200) {
         final List<dynamic> responseData = json.decode(response.body);
         final List<Map<String, dynamic>> newNotifications = List<Map<String, dynamic>>.from(responseData);
