@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:http/http.dart' as http;
 import 'package:watch/screens/achivements.dart';
-import 'dart:convert';
-import 'dart:async';
 
 import 'package:watch/widgets/step_gauge.dart';
 import 'package:watch/widgets/temperature.dart';
 
 class ColData extends StatefulWidget {
-  const ColData({super.key});
+  const ColData({
+    super.key,
+    required this.totalDistanceToday,
+    required this.totalStepsToday,
+    required this.totalCaloriesToday,
+  });
+
+  final double totalDistanceToday;
+  final int totalStepsToday;
+  final double totalCaloriesToday;
 
   @override
   State<ColData> createState() {
@@ -18,33 +24,6 @@ class ColData extends StatefulWidget {
 }
 
 class _ColData extends State<ColData> {
-  int steps = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchSteps();
-    Timer.periodic(const Duration(seconds: 2), (timer) {
-      _fetchSteps();
-    });
-  }
-
-  Future<void> _fetchSteps() async {
-    try {
-      final response =
-          await http.get(Uri.parse('http://192.168.0.101:5000/steps'));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          steps = data['steps'];
-        });
-      } else {
-        throw Exception('Failed to load steps');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +55,11 @@ class _ColData extends State<ColData> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AchievementsScreen(
-                            completedSteps: 6000,
-                            completedDistance: 7, 
-                            completedCalories: 1100,
-                          )),
+                          builder: (context) => AchievementsScreen(
+                                completedSteps: widget.totalStepsToday,
+                                completedDistance: widget.totalDistanceToday,
+                                completedCalories: widget.totalCaloriesToday,
+                              )),
                     );
                   },
                   child: const Icon(
@@ -94,7 +73,7 @@ class _ColData extends State<ColData> {
           ),
         ),
         ClipRect(
-          child: StepGauge(steps: steps),
+          child: StepGauge(steps: widget.totalStepsToday),
         ),
         IntrinsicHeight(
           child: Row(
@@ -115,7 +94,7 @@ class _ColData extends State<ColData> {
                   Padding(
                     padding: const EdgeInsets.only(left: 58.0),
                     child: Text(
-                      "$steps",
+                      widget.totalStepsToday.toString(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18.5,
@@ -128,9 +107,9 @@ class _ColData extends State<ColData> {
                 color: Colors.white,
                 thickness: 2,
               ),
-              const Column(
+              Column(
                 children: [
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(left: 5.0),
                     child: Text(
                       "DISTANCE",
@@ -141,10 +120,10 @@ class _ColData extends State<ColData> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 5.0),
+                    padding: const EdgeInsets.only(left: 5.0),
                     child: Text(
-                      "80.0 km",
-                      style: TextStyle(
+                      widget.totalDistanceToday.toStringAsFixed(2),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18.5,
                       ),
@@ -156,9 +135,9 @@ class _ColData extends State<ColData> {
                 color: Colors.white,
                 thickness: 2,
               ),
-              const Column(
+              Column(
                 children: [
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(right: 58.0),
                     child: Text(
                       "HEAT",
@@ -169,10 +148,10 @@ class _ColData extends State<ColData> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 58.0),
+                    padding: const EdgeInsets.only(right: 58.0),
                     child: Text(
-                      "0.0 Kcal",
-                      style: TextStyle(
+                      widget.totalCaloriesToday.toStringAsFixed(2),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18.5,
                       ),

@@ -15,19 +15,21 @@ class AchievementsScreen extends StatelessWidget {
   final int targetDistance = 10;
   final int targetCalories = 1000;
   final int completedSteps;
-  final int completedDistance;
-  final int completedCalories;
+  final double completedDistance;
+  final double completedCalories;
   final int points = 6000;
 
-  String getProgressString(int target, int completed) {
+  String getProgressString(int target, double completed) {
     if (completed >= target) {
       return 'Completed';
     } else {
-      return '${target - completed} remaining';
+      double progress = target - completed;
+      String formattedProgress = progress.toStringAsFixed(2);
+      return '$formattedProgress remaining';
     }
   }
 
-  double getProgressValue(int target, int completed) {
+  double getProgressValue(int target, double completed) {
     if (completed >= target) {
       return 1;
     } else {
@@ -90,7 +92,8 @@ class AchievementsScreen extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 1,
                         blurRadius: 3,
-                        offset: const Offset(0, 4), // changes position of shadow
+                        offset:
+                            const Offset(0, 4), // changes position of shadow
                       ),
                     ],
                   ),
@@ -135,7 +138,8 @@ class AchievementsScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 211, 79), // Yellow color for the button
+                      backgroundColor: const Color.fromARGB(
+                          255, 255, 211, 79), // Yellow color for the button
                       textStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -143,7 +147,8 @@ class AchievementsScreen extends StatelessWidget {
                       elevation: 5,
                       minimumSize: const Size(100, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), // Set border radius
+                        borderRadius:
+                            BorderRadius.circular(15), // Set border radius
                       ),
                     ),
                     child: const Row(
@@ -166,8 +171,10 @@ class AchievementsScreen extends StatelessWidget {
               iconColor: const Color.fromARGB(255, 4, 181, 21),
               goal: '$targetSteps Steps',
               reward: '100 Coins',
-              progress: getProgressString(targetSteps, completedSteps),
-              progressValue: getProgressValue(targetSteps, completedSteps),
+              progress:
+                  getProgressString(targetSteps, completedSteps.toDouble()),
+              progressValue:
+                  getProgressValue(targetSteps, completedSteps.toDouble()),
             ),
             const SizedBox(
               height: 28,
@@ -178,7 +185,8 @@ class AchievementsScreen extends StatelessWidget {
               goal: '$targetDistance Km',
               reward: '150 Coins',
               progress: getProgressString(targetDistance, completedDistance),
-              progressValue: getProgressValue(targetDistance, completedDistance),
+              progressValue:
+                  getProgressValue(targetDistance, completedDistance),
             ),
             const SizedBox(
               height: 28,
@@ -189,7 +197,8 @@ class AchievementsScreen extends StatelessWidget {
               goal: '$targetCalories Cal',
               reward: '50 Coins',
               progress: getProgressString(targetCalories, completedCalories),
-              progressValue: getProgressValue(targetCalories, completedCalories),
+              progressValue:
+                  getProgressValue(targetCalories, completedCalories),
             ),
             const SizedBox(
               height: 30,
