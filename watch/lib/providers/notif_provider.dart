@@ -29,7 +29,7 @@ class NotificationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-      final androidImplementation = flutterLocalNotificationsPlugin
+    final androidImplementation = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     androidImplementation?.requestNotificationsPermission();
   }
@@ -43,7 +43,7 @@ class NotificationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
 
         if (newNotifications.isNotEmpty && newNotifications.length > state.length) {
           final newNotification = newNotifications.last;
-          _showNotification(newNotification['type'], newNotification['message']);
+          _showNotification('Notification', newNotification['message']);
         }
 
         state = newNotifications;
@@ -75,7 +75,7 @@ class NotificationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   }
 
   void _startPeriodicFetch() {
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       fetchNotifications();
     });
   }

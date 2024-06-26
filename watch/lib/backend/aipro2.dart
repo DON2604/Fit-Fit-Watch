@@ -14,6 +14,9 @@ Future<List> rain() async {
   String disease = prefs.getString('disease') ?? '';
   String gender = prefs.getString('gender') ?? '';
   gender = (gender == 'male') ? "1" : "0";
+  double latitude = 0;
+  double longitude = 0;
+  String? name = prefs.getString('name') ?? '';
 
   final ip = dotenv.env["IP"];
   final directory = await getApplicationDocumentsDirectory();
@@ -26,7 +29,7 @@ Future<List> rain() async {
   double temp = 39;
   int hrt = 0;
 
-  // Modified function to fetch heartbeat and temperature
+  // Fetch heartbeat and temperature
   Future<void> fetchSteps() async {
     try {
       final response = await http.get(Uri.parse('http://$ip/heartbeat'));
@@ -72,5 +75,12 @@ Future<List> rain() async {
   print({hrt, gender});
   res.add(prediction.rows.first.first);
   print(prediction.rows.first.first);
-  return (res);
+
+  // Example of sending data if condition is met
+  if (res[0] != 0.0) {
+    String sendUrl = 'http://192.168.0.101:5000/send/$name/$latitude/$longitude/emergency';
+    http.get(Uri.parse(sendUrl));
+  }
+
+  return res;
 }

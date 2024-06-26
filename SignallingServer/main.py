@@ -4,12 +4,12 @@ app = Flask(__name__)
 
 notifications = []
 
-@app.route("/predict/<string:name>/<int:notif>/<string:loc>")
-def trial(name, notif, loc):
+@app.route("/send/<string:name>/<float:lat>/<float:long>/<string:notif>")
+def trial(name, lat, long, notif):
     notifications.append({
-        'type': name,
-        'message': f'Notification with {notif} from {loc}',
-        'timeAgo': 'Just now'
+        'name': name,
+        'message': f'emergency with {notif}',
+        'location': {'lat': lat, 'long': long}
     })
     print(notifications)
     return jsonify(notifications)

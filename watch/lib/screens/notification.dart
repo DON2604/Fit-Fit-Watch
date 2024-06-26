@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watch/providers/notif_provider.dart'; // Import your notification provider
+import 'package:watch/providers/notif_provider.dart';
+import 'package:watch/screens/emergency_map.dart';
+import 'package:watch/widgets/notif_card.dart'; // Ensure this path is correct
 
 class NotificationScreen extends ConsumerWidget {
   const NotificationScreen({super.key});
@@ -12,10 +14,10 @@ class NotificationScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: const Text('Notifications'),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: () {
               notificationNotifier.fetchNotifications();
             },
@@ -35,7 +37,7 @@ class NotificationScreen extends ConsumerWidget {
           ),
         ),
         child: notifications.isEmpty
-            ? Center(
+            ? const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -58,10 +60,12 @@ class NotificationScreen extends ConsumerWidget {
             : ListView.builder(
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
+                  final notification = notifications[index];
                   return NotificationCard(
-                    type: notifications[index]['type'],
-                    message: notifications[index]['message'],
-                    timeAgo: notifications[index]['timeAgo'],
+                    name: notification['name'] ?? 'Unknown',
+                    message: notification['message'] ?? 'No message',
+                    lat: notification['location']['lat'] ?? 0.0,
+                    long: notification['location']['long'] ?? 0.0,
                   );
                 },
               ),
@@ -70,53 +74,3 @@ class NotificationScreen extends ConsumerWidget {
   }
 }
 
-class NotificationCard extends StatelessWidget {
-  final String type;
-  final String message;
-  final String timeAgo;
-
-  const NotificationCard({
-    required this.type,
-    required this.message,
-    required this.timeAgo,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10.0),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  type,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-                Text(
-                  timeAgo,
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              message,
-              style: TextStyle(fontSize: 16.0),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
