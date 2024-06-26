@@ -28,6 +28,10 @@ class NotificationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
         InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+      final androidImplementation = flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    androidImplementation?.requestNotificationsPermission();
   }
 
   Future<void> fetchNotifications() async {
