@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from pyngrok import ngrok
 
-ngrok_auth_token = "2bGa6tBR6FBvA03HhCkht1m0srF_3YYzHG14cqXiarx3XK3NQ"
+ngrok_auth_token = ""
 
 
 port_no=5000
