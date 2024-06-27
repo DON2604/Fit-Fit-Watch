@@ -46,10 +46,11 @@ class FitnessAppModel extends ChangeNotifier {
   }
 
   Future<void> getAbi() async {
-    String abiStringFile = await rootBundle.loadString("watch/src/abis/FitnessApp.json");
+    String abiStringFile = await rootBundle.loadString("src/abis/FitnessApp.json");
     var abiJson = jsonDecode(abiStringFile);
     _abiCode = jsonEncode(abiJson["abi"]);
-    _contractAddress = EthereumAddress.fromHex(abiJson["address"]["networks"]["5777"]["address"]);
+    _contractAddress = EthereumAddress.fromHex(abiJson["networks"]["5777"]["address"]);
+    
     
     
   }
@@ -71,6 +72,7 @@ class FitnessAppModel extends ChangeNotifier {
     _getItemPrice = _contract!.function("getItemPrice");
     _CoinsEarned = _contract!.event("CoinsEarned");
     _ItemBought = _contract!.event("ItemBought");
+    print(await _client!.call(contract: _contract!, function: _getBalance!, params: []));
     
   }
 }
