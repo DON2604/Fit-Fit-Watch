@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field, unused_import, file_names, non_constant_identifier_names, avoid_print
-
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -43,6 +41,7 @@ class FitnessAppModel extends ChangeNotifier {
     await getAbi();
     await getCredentials();
     await getDeployedContract();
+    await getBalance();
   }
 
   Future<void> getAbi() async {
@@ -50,9 +49,6 @@ class FitnessAppModel extends ChangeNotifier {
     var abiJson = jsonDecode(abiStringFile);
     _abiCode = jsonEncode(abiJson["abi"]);
     _contractAddress = EthereumAddress.fromHex(abiJson["networks"]["5777"]["address"]);
-    
-    
-    
   }
 
   Future<void> getCredentials() async {
@@ -61,7 +57,8 @@ class FitnessAppModel extends ChangeNotifier {
       _ownAddress = await _credentials!.extractAddress();
     }
   }
-  Future<void> getDeployedContract() async{
+
+  Future<void> getDeployedContract() async {
     _contract = DeployedContract(ContractAbi.fromJson(_abiCode!, "FitnessApp"), _contractAddress!);
     
     _updateUserData = _contract!.function("updateUserData");
@@ -72,9 +69,8 @@ class FitnessAppModel extends ChangeNotifier {
     _getItemPrice = _contract!.function("getItemPrice");
     _CoinsEarned = _contract!.event("CoinsEarned");
     _ItemBought = _contract!.event("ItemBought");
-    
-    
   }
+
   Future<int> getBalance() async {
     if (_client != null && _contract != null && _getBalance != null) {
       final result = await _client!.call(contract: _contract!, function: _getBalance!, params: []);
@@ -82,16 +78,51 @@ class FitnessAppModel extends ChangeNotifier {
     }
     return 0; 
   }
-}
+  
+  Future<void> earnCoins(int steps, int distance) async {
+    if (_client != null && _contract != null && _earnCoins != null && _updateUserData != null) {
+      
+      await _client!.sendTransaction(
+        _credentials!,
+        Transaction.callContract(
+          contract: _contract!,
+          function: _updateUserData!,
+          parameters: [BigInt.from(steps), BigInt.from(distance)],
+        ),
+      );
 
-class Coins {
-  final int balance;
-  final int steps;
-  final int distance;
+      await _client!.sendTransaction(
+        _credentials!,
+        Transaction.callContract(
+          contract: _contract!,
+          function: _earnCoins!,
+          parameters: [],
+        ),
+      );
 
-  Coins({
-    this.balance = 0,
-    this.steps = 0,
-    this.distance = 0,
-  });
+      notifyListeners();
+    }
+  }
+
+  Future<void> buyItem(String itemName) async {
+    if (_client != null && _contract != null && _buyItem != null) {
+      // Get the item price from the contract
+      final price = await _client!.call(contract: _contract!, function: _getItemPrice!, params: [itemName]);
+
+      
+      await _client!.sendTransaction(
+        _credentials!,
+        Transaction.callContract(
+          contract: _contract!,
+          function: _buyItem!,
+          parameters: [itemName],
+          
+          gasPrice: EtherAmount.inWei(BigInt.from(20000000000)),
+          maxGas: 300000,
+        ),
+      );
+
+      notifyListeners();
+    }
+  }
 }
