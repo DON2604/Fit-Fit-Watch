@@ -1,4 +1,12 @@
 from flask import Flask, jsonify
+from pyngrok import ngrok
+
+ngrok_auth_token = ""
+
+
+port_no=5000
+public_url = ngrok.connect(port_no).public_url
+print(public_url)
 
 app = Flask(__name__)
 
