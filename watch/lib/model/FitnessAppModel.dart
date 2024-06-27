@@ -72,8 +72,15 @@ class FitnessAppModel extends ChangeNotifier {
     _getItemPrice = _contract!.function("getItemPrice");
     _CoinsEarned = _contract!.event("CoinsEarned");
     _ItemBought = _contract!.event("ItemBought");
-    print(await _client!.call(contract: _contract!, function: _getBalance!, params: []));
     
+    
+  }
+  Future<int> getBalance() async {
+    if (_client != null && _contract != null && _getBalance != null) {
+      final result = await _client!.call(contract: _contract!, function: _getBalance!, params: []);
+      return result.first as int;
+    }
+    return 0; 
   }
 }
 
