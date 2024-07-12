@@ -1,15 +1,14 @@
 module.exports = {
   networks: {
     development: {
-      host: "192.168.0.5",
+      host: "192.168.1.182",
       port: 7545,
       network_id: "*", // Match any network id
     },
-    advanced: {
-      websockets: true, // Enable EventEmitter interface for web3 (default: false)
-    },
+    
   },
-  contracts_build_directory: "./src/abis/",
+  contracts_directory: "./contracts",
+  
   compilers: {
     solc: {
       version: "0.8.13",
@@ -19,4 +18,8 @@ module.exports = {
       },
     },
   },
+  db: {
+    enabled: false
+  }
+
 };
