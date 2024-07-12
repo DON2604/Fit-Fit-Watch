@@ -1,5 +1,4 @@
 import Sidebar from '@/components/Sidebar'
-import { redirect } from 'next/navigation'
 import React from 'react'
 
 

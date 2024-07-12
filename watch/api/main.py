@@ -10,7 +10,7 @@ def get_steps():
 
 @app.route('/heartbeat')
 def get_heartbeat():
-    heartbeat = random.randint(60, 130) 
+    heartbeat = random.randint(80, 100) 
     return jsonify({"heartbeat": heartbeat})
 
 if __name__ == '__main__':

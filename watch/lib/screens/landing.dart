@@ -112,6 +112,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
                   totalCaloriesToday: totalCaloriesToday,
                 ),
               ),
+              const SizedBox(height: 15.0),
               Expanded(
                 child: Gridder(
                   totalDistanceToday: totalDistanceToday,
