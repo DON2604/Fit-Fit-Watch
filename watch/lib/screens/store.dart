@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:watch/data/dummy_product.dart'; // Assuming you have productItems defined here
+import 'package:watch/data/dummy_product.dart';
 import 'package:watch/widgets/product_detail.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:watch/model/FitnessAppModel.dart';
-import 'package:watch/providers/fitnessappprovider.dart';
 
-class StoreScreen extends ConsumerWidget {
-  const StoreScreen({Key? key}) : super(key: key);
+class StoreScreen extends StatelessWidget {
+  const StoreScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final model = ref.read(fitnessAppModelProvider);
-
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -45,7 +41,54 @@ class StoreScreen extends ConsumerWidget {
             const SizedBox(
               height: 20,
             ),
-            // Your CarouselSlider code here
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 132.0,
+                initialPage: 0,
+                enableInfiniteScroll: true,
+                reverse: false,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 2),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                scrollDirection: Axis.horizontal,
+                enlargeCenterPage: true,
+                enlargeFactor: 0.2,
+                viewportFraction: 0.8,
+              ),
+              items: [1, 2, 3].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    final List<String> phrase = [
+                      'Strength',
+                      'Fitness',
+                      'Health',
+                    ];
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/carousel/car$i.png'),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            Colors.black.withOpacity(0.28),
+                            BlendMode.darken,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          phrase[i - 1],
+                          style: const TextStyle(
+                              fontSize: 25.0, color: Colors.white),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
             const SizedBox(
               height: 30,
             ),
@@ -81,7 +124,8 @@ class StoreScreen extends ConsumerWidget {
                           heightFactor: 0.85,
                           child: ProductDetail(item: item),
                         ),
-                        isScrollControlled: true,
+                        isScrollControlled:
+                            true, // This allows the modal to take the specified height factor
                       );
                     },
                     child: Card(
@@ -133,12 +177,6 @@ class StoreScreen extends ConsumerWidget {
                               decoration: TextDecoration.lineThrough,
                               color: Colors.grey[600],
                             ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              model.buiItem(item.name); 
-                            },
-                            child: Text('Buy'),
                           ),
                         ],
                       ),

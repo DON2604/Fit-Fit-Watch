@@ -6,8 +6,6 @@ import 'package:watch/widgets/progess_container.dart';
 import 'package:watch/providers/fitnessappprovider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-
 class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({
     Key? key,
@@ -36,7 +34,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
 
   Future<void> _earnCoinsAndUpdateBalance() async {
     final fitnessAppModel = ref.read(fitnessAppModelProvider);
-    await fitnessAppModel.earnCoin(
+    await fitnessAppModel.earnCoins(
       widget.completedSteps.toInt(),
       widget.completedDistance.toInt(),
     );
@@ -61,18 +59,14 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
   }
 
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     final fitnessAppModel = ref.read(fitnessAppModelProvider);
-    
-    final balanceFuture ;
-    balanceFuture = fitnessAppModel.getDeployedContract();
-    
-    
+    final balanceFuture = fitnessAppModel.getBalance();
 
     return Scaffold(
-      body: FutureBuilder<BigInt>(
+      body: FutureBuilder<int>(
         future: balanceFuture,
-        builder: (BuildContext context, AsyncSnapshot<BigInt> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {

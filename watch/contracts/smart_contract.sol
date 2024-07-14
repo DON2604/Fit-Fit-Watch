@@ -41,7 +41,7 @@ contract FitnessApp {
         users[msg.sender].steps = 0; 
         users[msg.sender].distance = 0; 
 
-        emit CoinsEarned(msg.sender, totalCoins, users[msg.sender].balance);
+        emit CoinsEarned(msg.sender, totalCoins, getBalance());
     }
 
     function setItemPrice(string memory itemName, uint price) public onlyOwner {
@@ -54,7 +54,7 @@ contract FitnessApp {
 
         users[msg.sender].balance -= price;
 
-        emit ItemBought(msg.sender, itemName, price, users[msg.sender].balance);
+        emit ItemBought(msg.sender, itemName, price, getBalance());
     }
 
     function getBalance() public view returns (uint) {

@@ -7,116 +7,95 @@ import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
 
-
-
-
 class FitnessAppModel extends ChangeNotifier {
-  final String rpcUrl = "http://192.168.1.182:7545";
-  final String wsUrl = "ws://192.168.1.182:7545/";
+  final String _rpcUrl = "http://192.168.0.5:7545";
+  final String _wsUrl = "ws://192.168.0.5:7545/";
 
-  final String? privateKey =
-      "0x519a1d2e87ee858fad5f8d023a9e39e1015d685a1c851cc9fbf39b4fd9025c76";
+  final String? _privateKey = "0x4be807680cb344dd67e73d392b963e670d6cec340bd9d2ba3366969fb7c888a8";
 
-  Credentials? credentials;
-  Web3Client? client;
-  String? abiCode;
-  EthereumAddress? contractAddress;
-  EthereumAddress? ownAddress;
-  DeployedContract? contract;
-
-  ContractFunction? updateUserData;
-  ContractFunction? earnCoins;
-  ContractFunction? setItemPrice;
-  ContractFunction? buyItem;
-  ContractFunction? getBalance;
-  ContractFunction? getItemPrice;
-  ContractEvent? CoinsEarned;
-  ContractEvent? ItemBought;
-
-
+  Credentials? _credentials;
+  Web3Client? _client;
+  String? _abiCode;
+  EthereumAddress? _contractAddress;
+  EthereumAddress? _ownAddress;
+  DeployedContract? _contract;
+  
+  ContractFunction? _updateUserData;
+  ContractFunction? _earnCoins;
+  ContractFunction? _setItemPrice;
+  ContractFunction? _buyItem;
+  ContractFunction? _getBalance;
+  ContractFunction? _getItemPrice;
+  ContractEvent? _CoinsEarned;
+  ContractEvent? _ItemBought;
+  
   FitnessAppModel() {
     initialSetup();
   }
 
-  Future<void> initialSetup() async {
-    client = Web3Client(rpcUrl, Client(), socketConnector: () {
-      return IOWebSocketChannel.connect(wsUrl).cast<String>();
+  initialSetup() async {
+    _client = Web3Client(_rpcUrl, Client(), socketConnector: () {
+      return IOWebSocketChannel.connect(_wsUrl).cast<String>();
     });
 
+    await getAbi();
     await getCredentials();
     await getDeployedContract();
+    await getBalance();
+  }
+
+  Future<void> getAbi() async {
+    String abiStringFile = await rootBundle.loadString("src/abis/FitnessApp.json");
+    var abiJson = jsonDecode(abiStringFile);
+    _abiCode = jsonEncode(abiJson["abi"]);
+    _contractAddress = EthereumAddress.fromHex(abiJson["networks"]["5777"]["address"]);
   }
 
   Future<void> getCredentials() async {
-    if (client != null && privateKey != null) {
-      credentials = await client!.credentialsFromPrivateKey(privateKey!);
-      ownAddress = await credentials!.extractAddress();
-      print("Own Address: $ownAddress");
+    if (_client != null && _privateKey != null) {
+      _credentials = await _client!.credentialsFromPrivateKey(_privateKey);
+      _ownAddress = await _credentials!.extractAddress();
     }
   }
 
-  Future<BigInt> getDeployedContract() async {
-    String abiStringFile =
-        await rootBundle.loadString("build/contracts/FitnessApp.json");
-    var abiJson = jsonDecode(abiStringFile);
-    abiCode = jsonEncode(abiJson["abi"]);
-    contractAddress =
-        EthereumAddress.fromHex(abiJson["networks"]["5777"]["address"]);
-    print(abiCode);
-
-    if (abiCode == null || contractAddress == null) {
-      print("Error: ABI or contract address not loaded properly.");
-    }
-    contract = DeployedContract(
-        ContractAbi.fromJson(abiCode!, "FitnessApp"), contractAddress!);
-
-    updateUserData = contract!.function("updateUserData");
-    earnCoins = contract!.function("earnCoins");
-    setItemPrice = contract!.function("setItemPrice");
-    buyItem = contract!.function("buyItem");
-    getBalance = contract!.function("getBalance");
-    getItemPrice = contract!.function("getItemPrice");
-    CoinsEarned = contract!.event("CoinsEarned");
-    ItemBought = contract!.event("ItemBought");
-
-    print("Contract Initialized: $contract");
-    print("getBalance Function: $getBalance");
-    final bal = getBal();
-    return bal;
+  Future<void> getDeployedContract() async {
+    _contract = DeployedContract(ContractAbi.fromJson(_abiCode!, "FitnessApp"), _contractAddress!);
+    
+    _updateUserData = _contract!.function("updateUserData");
+    _earnCoins = _contract!.function("earnCoins");
+    _setItemPrice = _contract!.function("setItemPrice");
+    _buyItem = _contract!.function("buyItem");
+    _getBalance = _contract!.function("getBalance");
+    _getItemPrice = _contract!.function("getItemPrice");
+    _CoinsEarned = _contract!.event("CoinsEarned");
+    _ItemBought = _contract!.event("ItemBought");
   }
 
-  Future<BigInt> getBal() async {
-    if (client != null && contract != null && getBalance != null) {
-      final result = await client!
-          .call(contract: contract!, function: getBalance!, params: []);
-      print("Balance result: $result");
-      return result.first as BigInt;
+  Future<int> getBalance() async {
+    if (_client != null && _contract != null && _getBalance != null) {
+      final result = await _client!.call(contract: _contract!, function: _getBalance!, params: []);
+      return result.first as int;
     }
-    print("Contract: $contract");
-    print("Get Balance Function: $getBalance");
-    print("Client: $client");
-    return BigInt.two;
+    return 0; 
   }
-
-  Future<void> earnCoin(int steps, int distance) async {
-    if (client != null &&
-        contract != null &&
-        earnCoins != null &&
-        updateUserData != null) {
-      await client!.sendTransaction(
-        credentials!,
+  
+  Future<void> earnCoins(int steps, int distance) async {
+    if (_client != null && _contract != null && _earnCoins != null && _updateUserData != null) {
+      
+      await _client!.sendTransaction(
+        _credentials!,
         Transaction.callContract(
-          contract: contract!,
-          function: updateUserData!,
+          contract: _contract!,
+          function: _updateUserData!,
           parameters: [BigInt.from(steps), BigInt.from(distance)],
         ),
       );
 
-      await client!.sendTransaction(
-        credentials!,
+      await _client!.sendTransaction(
+        _credentials!,
         Transaction.callContract(
-          contract: contract!,
-          function: earnCoins!,
+          contract: _contract!,
+          function: _earnCoins!,
           parameters: [],
         ),
       );
@@ -125,18 +104,19 @@ class FitnessAppModel extends ChangeNotifier {
     }
   }
 
-  Future<void> buiItem(String itemName) async {
-    if (client != null && contract != null && buyItem != null) {
-      final price = await client!.call(
-          contract: contract!, function: getItemPrice!, params: [itemName]);
-      print("Item price: $price");
+  Future<void> buyItem(String itemName) async {
+    if (_client != null && _contract != null && _buyItem != null) {
+      // Get the item price from the contract
+      final price = await _client!.call(contract: _contract!, function: _getItemPrice!, params: [itemName]);
 
-      await client!.sendTransaction(
-        credentials!,
+      
+      await _client!.sendTransaction(
+        _credentials!,
         Transaction.callContract(
-          contract: contract!,
-          function: buyItem!,
+          contract: _contract!,
+          function: _buyItem!,
           parameters: [itemName],
+          
           gasPrice: EtherAmount.inWei(BigInt.from(20000000000)),
           maxGas: 300000,
         ),
