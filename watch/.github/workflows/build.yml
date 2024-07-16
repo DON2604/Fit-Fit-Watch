@@ -1,0 +1,20 @@
+name: watch  # Replace with a descriptive name
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to the main branch
+
+jobs:
+  build:
+    name: Build Job  # Replace with a descriptive job name
+    runs-on: ubuntu-latest  # Specify the operating system to run on
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2  # Action to checkout your repository's code
+
+      # Add more steps here based on your workflow requirements
