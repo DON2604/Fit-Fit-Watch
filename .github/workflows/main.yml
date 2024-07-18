@@ -35,7 +35,7 @@ jobs:
 
       - name: Build APK
         run: |
-          cd WATCH
+          cd watch
           flutter build apk --release
 
       - name: Upload APK
