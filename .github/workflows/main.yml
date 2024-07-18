@@ -30,7 +30,7 @@ jobs:
 
       - name: Flutter Pub Get
         run: |
-          cd WATCH
+          cd watch
           flutter pub get
 
       - name: Build APK
