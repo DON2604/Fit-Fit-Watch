@@ -1,20 +1,44 @@
-name: watch  # Replace with a descriptive name
+name: Build Flutter APK
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main
   pull_request:
     branches:
-      - main  # Trigger on pull requests to the main branch
+      - main
 
 jobs:
   build:
-    name: Build Job  # Replace with a descriptive job name
-    runs-on: ubuntu-latest  # Specify the operating system to run on
+    name: Build Job
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2  # Action to checkout your repository's code
+        uses: actions/checkout@v2
 
-      # Add more steps here based on your workflow requirements
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Install Flutter
+        run: |
+          git clone https://github.com/flutter/flutter.git -b stable
+          echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+
+      - name: Flutter Pub Get
+        run: |
+          cd WATCH
+          flutter pub get
+
+      - name: Build APK
+        run: |
+          cd WATCH
+          flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: flutter-apk
+          path: WATCH/build/app/outputs/flutter-apk/app-release.apk
