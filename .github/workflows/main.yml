@@ -25,7 +25,6 @@ jobs:
 
       - name: Install Flutter
         run: |
-          cd watch
           git clone https://github.com/flutter/flutter.git -b stable
           echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
 
