@@ -30,23 +30,21 @@ jobs:
 
       - name: Setup Environment Variables
         run: |
-          cd watch
-          echo "GOOGLE_MAPS_API=${{ secrets.GOOGLE_MAPS_API }}" > $GITHUB_WORKSPACE/.env
-          echo "IP=${{ secrets.IP }}" >> $GITHUB_WORKSPACE/.env
+          echo "GOOGLE_MAPS_API=${{ secrets.GOOGLE_MAPS_API }}" > $GITHUB_WORKSPACE/watch/.env
+          echo "IP=${{ secrets.IP }}" >> $GITHUB_WORKSPACE/watch/.env
 
       - name: Setup local.properties
         run: |
-          cd watch
-          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > $GITHUB_WORKSPACE/android/local.properties
+          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > $GITHUB_WORKSPACE/watch/android/local.properties
 
       - name: Flutter Pub Get
         run: |
-          
+          cd watch
           flutter pub get
 
       - name: Build APK
         run: |
-          
+          cd watch
           flutter build apk --release
 
       - name: Upload APK
