@@ -36,17 +36,17 @@ jobs:
 
       - name: Setup local.properties
         run: |
-          cd watch
+          
           echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > $GITHUB_WORKSPACE/android/local.properties
 
       - name: Flutter Pub Get
         run: |
-          cd watch
+          
           flutter pub get
 
       - name: Build APK
         run: |
-          cd watch
+          
           flutter build apk --release
 
       - name: Upload APK
