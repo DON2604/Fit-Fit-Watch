@@ -25,8 +25,20 @@ jobs:
 
       - name: Install Flutter
         run: |
+          cd watch
           git clone https://github.com/flutter/flutter.git -b stable
           echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+
+      - name: Setup Environment Variables
+        run: |
+          cd watch
+          echo "GOOGLE_MAPS_API=${{ secrets.GOOGLE_MAPS_API }}" > $GITHUB_WORKSPACE/.env
+          echo "IP=${{ secrets.IP }}" >> $GITHUB_WORKSPACE/.env
+
+      - name: Setup local.properties
+        run: |
+          cd watch
+          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > $GITHUB_WORKSPACE/android/local.properties
 
       - name: Flutter Pub Get
         run: |
@@ -42,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: flutter-apk
-          path: WATCH/build/app/outputs/flutter-apk/app-release.apk
+          path: watch/build/app/outputs/flutter-apk/app-release.apk
