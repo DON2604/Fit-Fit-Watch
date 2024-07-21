@@ -35,7 +35,7 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 3) {
       activePage = const StoreScreen();
     } else if (_selectedPageIndex == 4) {
-      activePage = const NotificationScreen();
+      activePage = const NotifScreen();
     }
 
     return Scaffold(

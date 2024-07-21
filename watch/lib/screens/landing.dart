@@ -89,7 +89,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
             } else {
               met = 5.0;
             }
-            print({met,  weight, totalTimeToday/3600});
+            print({met, weight, totalTimeToday / 3600});
             totalCaloriesToday =
                 met * num.parse(weight!) * (totalTimeToday / 3600);
           }
@@ -99,12 +99,20 @@ class _LandingPageState extends ConsumerState<LandingPage> {
           body: Column(
             children: [
               Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(114, 87, 233, 1),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(114, 87, 233, 1),
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: ColData(
                   totalDistanceToday: totalDistanceToday,

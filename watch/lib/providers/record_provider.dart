@@ -6,14 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:watch/helpers/database_helper.dart';
 import 'package:watch/model/records.dart';
+import 'package:watch/web3/balance_notifier.dart';
+import 'package:watch/web3/eth_service.dart';
 
-final recordProvider =
-    StateNotifierProvider<RecordingStateNotifier, Records>((ref) {
-  return RecordingStateNotifier();
+final recordProvider = StateNotifierProvider<RecordingStateNotifier, Records>((ref) {
+  return RecordingStateNotifier(ref);
 });
 
 class RecordingStateNotifier extends StateNotifier<Records> {
-  RecordingStateNotifier() : super(Records());
+  final Ref ref;
+
+  RecordingStateNotifier(this.ref) : super(Records());
 
   void startRecording() {
     final timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -53,6 +56,7 @@ class RecordingStateNotifier extends StateNotifier<Records> {
       routeCoordinates: newRouteCoordinates,
       totalDistanceToday: state.totalDistanceToday + newDistance,
     );
+    _handleDistanceUpdate(state.totalDistanceToday);
   }
 
   Future<void> _saveRecord() async {
@@ -96,5 +100,16 @@ class RecordingStateNotifier extends StateNotifier<Records> {
 
     return R * c / 1000; // returns the distance in kilometers
   }
+
+  void _handleDistanceUpdate(double distance) async {
+    if (distance > 0) {
+      final ethService = ref.read(ethServiceProvider);
+      final balanceNotifier = ref.read(balanceProvider.notifier);
+      // Convert distance to Wei (assuming 1 km = 1 Ether for simplicity)
+      final amount = BigInt.from(distance * 1e18);
+      await balanceNotifier.sendEther(amount);
+    }
+  }
 }
+
 

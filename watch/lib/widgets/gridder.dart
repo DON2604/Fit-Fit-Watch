@@ -85,8 +85,10 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
 
   double _generateECGPoint() {
     final random = Random();
-    double frequency = 0.6 + (heart - 60) / 100; // Adjust frequency based on heart rate
-    double amplitude = 0.2 + (heart - 60) / 100; // Adjust amplitude based on heart rate
+    double frequency =
+        0.6 + (heart - 60) / 100; // Adjust frequency based on heart rate
+    double amplitude =
+        0.2 + (heart - 60) / 100; // Adjust amplitude based on heart rate
     double phase = random.nextDouble() * 2 * pi; // Random phase shift
     return sin(phase + random.nextDouble() * pi * 2 * frequency) * amplitude;
   }
@@ -108,7 +110,7 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
               heart.toString(),
               'bpm',
               Icons.favorite,
-              const Color.fromARGB(112, 187, 222, 251),
+              const Color.fromARGB(216, 187, 222, 251),
               Colors.red,
               Colors.blue,
               showECG: true,
@@ -123,7 +125,7 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
               widget.totalStepsToday.toString(),
               'steps',
               Icons.run_circle_outlined,
-              const Color.fromARGB(112, 255, 224, 178),
+              const Color.fromARGB(186, 255, 224, 178),
               Colors.orange,
               Colors.orange,
             ),
@@ -136,7 +138,7 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
               widget.totalCaloriesToday.toStringAsFixed(2),
               'Kcal',
               Icons.local_fire_department,
-              const Color.fromARGB(112, 255, 236, 179),
+              const Color.fromARGB(183, 255, 236, 179),
               Colors.amber,
               Colors.amber,
             ),
@@ -147,23 +149,31 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
   }
 
   Widget buildHealthCard(
-      String title,
-      String value,
-      String unit,
-      IconData icon,
-      Color backgroundColor,
-      Color iconColor,
-      Color borderColor, {
-        bool showECG = false,
-        double iconSize = 24.0,
-      }) {
+    String title,
+    String value,
+    String unit,
+    IconData icon,
+    Color backgroundColor,
+    Color iconColor,
+    Color borderColor, {
+    bool showECG = false,
+    double iconSize = 24.0,
+  }) {
     return Container(
-      margin: const EdgeInsets.all(7),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor, width: 2),
+        border: Border.all(color: borderColor, width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
+      margin: const EdgeInsets.all(7),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,13 +219,15 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
           Center(
             child: Text(
               value,
-              style: title == 'Heart rate' ? const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ): const TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-              ),
+              style: title == 'Heart rate'
+                  ? const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    )
+                  : const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                    ),
             ),
           ),
           if (unit.isNotEmpty)
