@@ -110,6 +110,10 @@ flutter:
     - assets/ai/ai2.gif
     - assets/ai/hrt.gif
     - assets/ai/watch.png
+
+    - assets/emo/angry.gif
+    
+
     - .env
     - lib/data/datasets.csv
     - lib/backend/classifier.json

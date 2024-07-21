@@ -168,7 +168,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
                             Row(
                               children: [
                                 Image.asset(
-                                  "assets/ai/watch.png",
+                                  "assets/emo/angry.gif",
                                   width: 120,
                                 ),
                                 const SizedBox(width: 55),
