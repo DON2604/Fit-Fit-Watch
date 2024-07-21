@@ -28,6 +28,15 @@ jobs:
           git clone https://github.com/flutter/flutter.git -b stable
           echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
 
+      - name: Setup Environment Variables
+        run: |
+          echo "GOOGLE_MAPS_API=${{ secrets.GOOGLE_MAPS_API }}" > $GITHUB_WORKSPACE/watch/.env
+          echo "IP=${{ secrets.IP }}" >> $GITHUB_WORKSPACE/watch/.env
+
+      - name: Setup local.properties
+        run: |
+          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > $GITHUB_WORKSPACE/watch/android/local.properties
+
       - name: Flutter Pub Get
         run: |
           cd watch
@@ -42,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: flutter-apk
-          path: WATCH/build/app/outputs/flutter-apk/app-release.apk
+          path: watch/build/app/outputs/flutter-apk/app-release.apk

@@ -38,7 +38,7 @@ class _Gridder extends State<Gridder> with SingleTickerProviderStateMixin {
     ip = dotenv.env["IP"];
     if (ip != null) {
       _fetchBeat();
-      Timer.periodic(const Duration(milliseconds: 5), (timer) {
+      Timer.periodic(const Duration(milliseconds: 8), (timer) {
         _updateECG();
       });
       Timer.periodic(const Duration(seconds: 2), (timer) {
