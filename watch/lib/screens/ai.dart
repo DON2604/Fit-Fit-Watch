@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +24,8 @@ class _AiScreen extends ConsumerState<AiScreen> {
   String res = 'Processing...';
   String prevpred = '';
   var dynamicIcon = const Icon(Icons.warning, color: Colors.red);
+  late List<_ChartData> data;
+  late TooltipBehavior _tooltip;
 
   @override
   void initState() {
@@ -33,6 +35,16 @@ class _AiScreen extends ConsumerState<AiScreen> {
     Timer.periodic(const Duration(seconds: 2), (timer) {
       _fetchPrediction();
     });
+    data = [
+      _ChartData('MON', 6000),
+      _ChartData('TUE', 3500),
+      _ChartData('WED', 5000),
+      _ChartData('THUR', 6000),
+      _ChartData('FRI', 2000),
+      _ChartData('SAT', 1000),
+      _ChartData('SUN', 8000),
+    ];
+    _tooltip = TooltipBehavior(enable: true);
   }
 
   Future<void> _loadName() async {
@@ -72,6 +84,13 @@ class _AiScreen extends ConsumerState<AiScreen> {
   @override
   Widget build(BuildContext context) {
     final heartRateState = ref.watch(heartRateProvider);
+
+    final List<ChartDatas> chartDatas = [
+      ChartDatas('A', 60),
+      ChartDatas('B', 80),
+      ChartDatas('C', 90),
+      ChartDatas('D', 70),
+    ];
 
     return Scaffold(
       body: Container(
@@ -120,67 +139,70 @@ class _AiScreen extends ConsumerState<AiScreen> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
             Expanded(
               child: SingleChildScrollView(
-                child: Card(
-                  color: const Color.fromARGB(225, 255, 255, 255),
-                  margin: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 12, left: 16.0, right: 16.0, bottom: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Service Status",
-                          style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
+                child: Column(
+                  children: [
+                    Card(
+                      color: const Color.fromARGB(225, 255, 255, 255),
+                      margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 12, left: 16.0, right: 16.0, bottom: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              "assets/ai/watch.png",
-                              width: 120,
+                            Text(
+                              "Service Status",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            const SizedBox(width: 55),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            const SizedBox(height: 16),
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.watch),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      "Status: ",
-                                      style: GoogleFonts.roboto(fontSize: 14),
-                                    ),
-                                    Text(
-                                      heartRateState.wastat,
-                                      style: GoogleFonts.roboto(
-                                          fontSize: 14,
-                                          color: heartRateState.statcol,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
+                                Image.asset(
+                                  "assets/ai/watch.png",
+                                  width: 120,
                                 ),
-                                const SizedBox(height: 4),
-                                Row(
+                                const SizedBox(width: 55),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.battery_full),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      "Battery: 85%",
-                                      style: GoogleFonts.roboto(fontSize: 14),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.watch),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          "Status: ",
+                                          style:
+                                              GoogleFonts.roboto(fontSize: 14),
+                                        ),
+                                        Text(
+                                          heartRateState.wastat,
+                                          style: GoogleFonts.roboto(
+                                              fontSize: 14,
+                                              color: heartRateState.statcol,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.battery_full),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          "Battery: 85%",
+                                          style:
+                                              GoogleFonts.roboto(fontSize: 14),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -188,126 +210,93 @@ class _AiScreen extends ConsumerState<AiScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 25),
-                        Column(
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Card(
+                      color: const Color.fromARGB(225, 255, 255, 255),
+                      margin: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5, bottom: 12),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 12, right: 16.0, bottom: 16.0),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Health Data:",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.only(left:20),
+                              child: Text(
+                                "AI Analysis",
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Current Heart Rate:",
-                                  style: GoogleFonts.roboto(fontSize: 14),
-                                ),
-                                Text(
-                                  heartRateState.hrtstat,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 14,
-                                    color: Colors.red,
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              height: 180,
+                              width: 180,
+                              child: SfCircularChart(series: <CircularSeries>[
+                                RadialBarSeries<ChartDatas, String>(
+                                    dataSource: chartDatas,
+                                    xValueMapper: (ChartDatas data, _) =>
+                                        data.person,
+                                    yValueMapper: (ChartDatas data, _) =>
+                                        data.status)
+                              ]),
+                            ),
+                            SizedBox(
+                              height: 200,
+                              child: SfCartesianChart(
+                                primaryXAxis: const CategoryAxis(
+                                  title: AxisTitle(
+                                    text: 'Days', // Set your x-axis title here
+                                    textStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Blood Pressure:",
-                                  style: GoogleFonts.roboto(fontSize: 14),
+                                primaryYAxis: const NumericAxis(
+                                  title: AxisTitle(
+                                    text: 'Steps', // Set your y-axis title here
+                                    textStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  minimum: 0,
+                                  maximum: 10000,
+                                  interval: 2000,
                                 ),
-                                Text(
-                                  "120/80 mmHg",
-                                  style: GoogleFonts.roboto(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Oxygen Saturation:",
-                                  style: GoogleFonts.roboto(fontSize: 14),
-                                ),
-                                Text(
-                                  "98%",
-                                  style: GoogleFonts.roboto(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 22),
-                        Row(
-                          children: [
-                            Text(
-                              "AI Analysis:",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                tooltipBehavior: _tooltip,
+                                series: <CartesianSeries<_ChartData, String>>[
+                                  ColumnSeries<_ChartData, String>(
+                                    dataSource: data,
+                                    xValueMapper: (_ChartData data, _) =>
+                                        data.x,
+                                    yValueMapper: (_ChartData data, _) =>
+                                        data.y,
+                                    name: 'Steps',
+                                    color: const Color.fromRGBO(8, 142, 255, 1),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(11),
+                                      topRight: Radius.circular(11),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            (predictionResult ==
-                                    "ABNORMAL HEALTH STATUS DETECTED")
-                                ? const Icon(Icons.warning, color: Colors.red)
-                                : const Icon(FontAwesome.check_circle,
-                                    color: Colors.green),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              predictionResult,
-                              style: GoogleFonts.roboto(
-                                fontSize: 14,
-                                color: predictionResult ==
-                                        "ABNORMAL HEALTH STATUS DETECTED"
-                                    ? const Color.fromARGB(255, 154, 14, 4)
-                                    : const Color.fromARGB(255, 5, 116, 8),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 7,
-                            ),
-                            Text(
-                              "Recommendations:",
-                              style: GoogleFonts.roboto(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              res,
-                              style: GoogleFonts.roboto(fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -317,3 +306,17 @@ class _AiScreen extends ConsumerState<AiScreen> {
     );
   }
 }
+
+class ChartDatas {
+  ChartDatas(this.person, this.status);
+  final String person;
+  final double status;
+}
+
+class _ChartData {
+  _ChartData(this.x, this.y);
+
+  final String x;
+  final double y;
+}
+
