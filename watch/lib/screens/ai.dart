@@ -25,11 +25,13 @@ class _AiScreen extends ConsumerState<AiScreen> {
   String prevpred = '';
   var dynamicIcon = const Icon(Icons.warning, color: Colors.red);
   late List<_ChartData> data;
+  late List<ChartDatas> chartDatas;
   late TooltipBehavior _tooltip;
+  late TooltipBehavior _tooltip2;
 
   @override
   void initState() {
-    super.initState();
+        super.initState();
     _loadName();
     _fetchPrediction();
     Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -44,7 +46,13 @@ class _AiScreen extends ConsumerState<AiScreen> {
       _ChartData('SAT', 1000),
       _ChartData('SUN', 8000),
     ];
+    chartDatas = [
+      ChartDatas('A', 60),
+      ChartDatas('B', 80),
+      ChartDatas('C', 90),
+    ];
     _tooltip = TooltipBehavior(enable: true);
+    _tooltip2 = TooltipBehavior(enable: true);
   }
 
   Future<void> _loadName() async {
@@ -84,13 +92,6 @@ class _AiScreen extends ConsumerState<AiScreen> {
   @override
   Widget build(BuildContext context) {
     final heartRateState = ref.watch(heartRateProvider);
-
-    final List<ChartDatas> chartDatas = [
-      ChartDatas('A', 60),
-      ChartDatas('B', 80),
-      ChartDatas('C', 90),
-      ChartDatas('D', 70),
-    ];
 
     return Scaffold(
       body: Container(
@@ -228,7 +229,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left:20),
+                              padding: const EdgeInsets.only(left: 20),
                               child: Text(
                                 "AI Analysis",
                                 style: GoogleFonts.montserrat(
@@ -237,23 +238,29 @@ class _AiScreen extends ConsumerState<AiScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
                             SizedBox(
-                              height: 180,
-                              width: 180,
-                              child: SfCircularChart(series: <CircularSeries>[
-                                RadialBarSeries<ChartDatas, String>(
-                                    dataSource: chartDatas,
-                                    xValueMapper: (ChartDatas data, _) =>
-                                        data.person,
-                                    yValueMapper: (ChartDatas data, _) =>
-                                        data.status)
-                              ]),
+                              height: 160,
+                              width: 160,
+                              child: SfCircularChart(
+                                  tooltipBehavior: _tooltip2,
+                                  series: <CircularSeries>[
+                                    RadialBarSeries<ChartDatas, String>(
+                                      animationDuration: 5000,
+                                      
+                                      dataSource: chartDatas,
+                                      xValueMapper: (ChartDatas data, _) =>
+                                          data.person,
+                                      yValueMapper: (ChartDatas data, _) =>
+                                          data.status,
+                                    )
+                                  ]),
                             ),
                             SizedBox(
                               height: 200,
                               child: SfCartesianChart(
+                                plotAreaBorderWidth: 0,
                                 primaryXAxis: const CategoryAxis(
+                                  majorGridLines: MajorGridLines(width: 0),
                                   title: AxisTitle(
                                     text: 'Days', // Set your x-axis title here
                                     textStyle: TextStyle(
@@ -273,6 +280,8 @@ class _AiScreen extends ConsumerState<AiScreen> {
                                   minimum: 0,
                                   maximum: 10000,
                                   interval: 2000,
+                                  majorGridLines: MajorGridLines(width: 0),
+                                  minorGridLines: MinorGridLines(width: 0),
                                 ),
                                 tooltipBehavior: _tooltip,
                                 series: <CartesianSeries<_ChartData, String>>[
@@ -319,4 +328,3 @@ class _ChartData {
   final String x;
   final double y;
 }
-

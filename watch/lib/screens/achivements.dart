@@ -96,7 +96,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               height: 10.0,
             ),
             Image.asset(
-              'assets/badges/bad5.png',
+              'assets/badges/bad3.png',
               height: 250,
               width: 250,
             ),
