@@ -249,63 +249,70 @@ class _AiScreen extends ConsumerState<AiScreen> {
 
                     // Add the carousel here
                     Card(
-  color: const Color.fromARGB(225, 255, 255, 255),
-  margin: const EdgeInsets.only(
-    left: 15.0, right: 15.0, top: 5, bottom: 12),
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "YouTube Recommendations",
-          style: GoogleFonts.montserrat(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        CarouselSlider(
-          options: CarouselOptions(
-            height: 180,
-            autoPlay: false,
-            aspectRatio: 16 / 9,
-            viewportFraction: 0.8,
-            enlargeCenterPage: true,
-          ),
-          items: [
-            'WL8w8ynq2Xw',
-            'WL8w8ynq2Xw',
-            'WL8w8ynq2Xw',
-          ].map((videoId) {
-            YoutubePlayerController controller = YoutubePlayerController(
-              initialVideoId: videoId,
-              flags: const YoutubePlayerFlags(
-                autoPlay: false,
-                mute: false,
-              ),
-            );
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: YoutubePlayer(
-                  controller: controller,
-                  showVideoProgressIndicator: true,
-                  progressIndicatorColor: Colors.blueAccent,
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    ),
-  ),
-),
+                      color: const Color.fromARGB(225, 255, 255, 255),
+                      margin: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 5, bottom: 12),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "YouTube Recommendations",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            CarouselSlider(
+                              options: CarouselOptions(
+                                height: 180,
+                                autoPlay: true,
+                                autoPlayInterval: const Duration(seconds: 2),
+                                autoPlayAnimationDuration:
+                                const Duration(milliseconds: 800),
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                scrollDirection: Axis.horizontal,
+                                aspectRatio: 16 / 9,
+                                viewportFraction: 0.8,
+                                enlargeCenterPage: true,
+                              ),
+                              items: [
+                                '6aiR1mFD7Gw',
+                                'yz6F8-w3K-o',
+                                '7s0GydUTcdg',
+                              ].map((videoId) {
+                                YoutubePlayerController controller =
+                                    YoutubePlayerController(
+                                  initialVideoId: videoId,
+                                  flags: const YoutubePlayerFlags(
+                                    autoPlay: false,
+                                    mute: false,
+                                  ),
+                                );
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: YoutubePlayer(
+                                      controller: controller,
+                                      showVideoProgressIndicator: false,
+                                      progressIndicatorColor: Colors.blueAccent,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                     Card(
                       color: const Color.fromARGB(225, 255, 255, 255),
