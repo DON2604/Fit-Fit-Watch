@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:watch/backend/aipro2.dart';
 import 'package:watch/data/rec.dart';
 import 'package:watch/providers/heart_rate_provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({super.key});
@@ -31,7 +34,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
 
   @override
   void initState() {
-        super.initState();
+    super.initState();
     _loadName();
     _fetchPrediction();
     Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -133,9 +136,13 @@ class _AiScreen extends ConsumerState<AiScreen> {
                       ),
                     ],
                   ),
-                  Image.asset(
-                    "assets/ai/ai1.gif",
-                    width: 155,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 12.0, left: 12, right: 12),
+                    child: Image.asset(
+                      "assets/ai/ai1.gif",
+                      width: 102,
+                    ),
                   ),
                 ],
               ),
@@ -158,7 +165,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Service Status",
+                              "Health Status",
                               style: GoogleFonts.montserrat(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -168,16 +175,16 @@ class _AiScreen extends ConsumerState<AiScreen> {
                             Row(
                               children: [
                                 Image.asset(
-                                  "assets/emo/angry.gif",
+                                  "assets/emo/problem.gif",
                                   width: 120,
                                 ),
-                                const SizedBox(width: 55),
+                                const SizedBox(width: 40),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
-                                        const Icon(Icons.watch),
+                                        const Icon(Icons.monitor_heart),
                                         const SizedBox(width: 8),
                                         Text(
                                           "Status: ",
@@ -185,7 +192,7 @@ class _AiScreen extends ConsumerState<AiScreen> {
                                               GoogleFonts.roboto(fontSize: 14),
                                         ),
                                         Text(
-                                          heartRateState.wastat,
+                                          heartRateState.hrtstat,
                                           style: GoogleFonts.roboto(
                                               fontSize: 14,
                                               color: heartRateState.statcol,
@@ -196,16 +203,41 @@ class _AiScreen extends ConsumerState<AiScreen> {
                                     const SizedBox(height: 4),
                                     Row(
                                       children: [
-                                        const Icon(Icons.battery_full),
+                                        const Icon(Icons.bloodtype),
                                         const SizedBox(width: 8),
                                         Text(
-                                          "Battery: 85%",
+                                          "Oxygen Saturation: 85%",
                                           style:
                                               GoogleFonts.roboto(fontSize: 14),
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: 4),
                                   ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Text(
+                                  "Recommendations:",
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  res,
+                                  style: GoogleFonts.roboto(fontSize: 14),
                                 ),
                               ],
                             ),
@@ -214,6 +246,67 @@ class _AiScreen extends ConsumerState<AiScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
+
+                    // Add the carousel here
+                    Card(
+  color: const Color.fromARGB(225, 255, 255, 255),
+  margin: const EdgeInsets.only(
+    left: 15.0, right: 15.0, top: 5, bottom: 12),
+  elevation: 4,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "YouTube Recommendations",
+          style: GoogleFonts.montserrat(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+        CarouselSlider(
+          options: CarouselOptions(
+            height: 180,
+            autoPlay: false,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            enlargeCenterPage: true,
+          ),
+          items: [
+            'WL8w8ynq2Xw',
+            'WL8w8ynq2Xw',
+            'WL8w8ynq2Xw',
+          ].map((videoId) {
+            YoutubePlayerController controller = YoutubePlayerController(
+              initialVideoId: videoId,
+              flags: const YoutubePlayerFlags(
+                autoPlay: false,
+                mute: false,
+              ),
+            );
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: YoutubePlayer(
+                  controller: controller,
+                  showVideoProgressIndicator: true,
+                  progressIndicatorColor: Colors.blueAccent,
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    ),
+  ),
+),
+
                     Card(
                       color: const Color.fromARGB(225, 255, 255, 255),
                       margin: const EdgeInsets.only(
@@ -246,7 +339,6 @@ class _AiScreen extends ConsumerState<AiScreen> {
                                   series: <CircularSeries>[
                                     RadialBarSeries<ChartDatas, String>(
                                       animationDuration: 5000,
-                                      
                                       dataSource: chartDatas,
                                       xValueMapper: (ChartDatas data, _) =>
                                           data.person,
